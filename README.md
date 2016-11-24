@@ -30,4 +30,9 @@ Daraufhin werdet ihr nach euren github Benutzernamen und Passwort gefragt den ih
 seit Jahren habt (alternativ hier anmelden: https://github.com/join). Jetzt koennt ihr im Browser auf unser Repo navigieren 
 und checken, ob alles geklappt hat: https://github.com/dlips/gamejam
 
+Nützliche Links:
+
+Pixelgrafik:
+http://www.piskelapp.com/
+
  
