@@ -1,4 +1,4 @@
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', myState);
+
 var myState = {
     preload :  function () {
         game.load.image('background', 'assets/img/background.png');
@@ -17,4 +17,4 @@ var myState = {
 
     }
 };
-
+var game = new Phaser.Game(800, 600, Phaser.AUTO, '', myState);
