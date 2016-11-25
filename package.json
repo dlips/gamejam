@@ -1,4 +1,6 @@
 {
+  "name" : "GAMEJAM",
+  "version" : "0.0.0",
   "engines": {
     "node": ">= 0.10.0"
   },
