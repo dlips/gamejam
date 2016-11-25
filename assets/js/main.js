@@ -10,6 +10,7 @@ var myState = {
         people = game.add.group();
         people.enableBody = true;
         var man = people.create(10,10,'man');
+        man.scale.setTo(4,8);
     },
     update : function () {
 
