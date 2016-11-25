@@ -6,6 +6,10 @@ var myState = {
     create : function () {
         game.physics.startSystem(Phaser.Physics.ARCADE);
         game.add.sprite(0, 0, 'background');
+
+        people = game.add.group();
+        people.enableBody = true;
+        var man = people.create(10,10,'man');
     },
     update : function () {
 
