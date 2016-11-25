@@ -1,6 +1,6 @@
 # Software zum installieren
 
-Genutzte Platform ist Windows. Ihr muesst folgende Programme installieren:
+Genutzte Platform ist Windows/Linux/Mac. Ihr muesst folgende Programme installieren:
 
 * Git: https://git-scm.com/download/win
 * nodejs: https://nodejs.org/en/
