@@ -1,4 +1,3 @@
-
 var myState = {
     preload :  function () {
         game.load.image('background', 'assets/img/background.png');
