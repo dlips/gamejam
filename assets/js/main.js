@@ -13,7 +13,7 @@ var myState = {
         this.people = game.add.group();
         this.people.enableBody = true;
         var man = this.people.create(10,10,'man');
-        man.scale.setTo(3,3);
+       // man.scale.setTo(3,3);
 
         //plattformen erstellen
         platform = game.add.group();
