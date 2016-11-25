@@ -2,7 +2,8 @@ var myState = {
     preload :  function () {
         game.load.image('background', 'assets/img/background.png');
         game.load.image('man', 'assets/img/man.png');
-        game.load.image('platform', 'assets/img/simpleplatform.png')
+        game.load.image('platform', 'assets/img/simpleplatform.png');
+        game.stage.smoothed = false;
     },
     create : function () {
         game.physics.startSystem(Phaser.Physics.ARCADE);
