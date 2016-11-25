@@ -25,4 +25,4 @@ var myState = {
 
     }
 };
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', myState);
+var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', myState);
