@@ -19,7 +19,7 @@ var myState = {
         //plattformen erstellen
         platform = game.add.group();
         platform.enableBody = true;
-        var startplatform = platform.create(10,10,'platform');
+        var startplatform = platform.create(10,100,'platform');
         startplatform.body.immovable = true;
     },
     update : function () {
@@ -31,7 +31,8 @@ var myState = {
         this.people.destroy();
         this.people = game.add.group();
         this.people.enableBody = true;
-        this.people.create(x, y, 'man');
+        var man = this.people.create(x, y, 'man');
+        man.scale.setTo(3,3);
     }
 };
 var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', myState);
