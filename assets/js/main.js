@@ -3,6 +3,7 @@ var myState = {
         game.load.image('background', 'assets/img/background.png');
         game.load.image('man', 'assets/img/man.png');
         game.load.image('platform', 'assets/img/simpleplatform.png');
+        game.load.spritesheet('testanimation', 'assets/img/testanimation.png', 51, 51, 30);
     },
     create : function () {
         game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -20,6 +21,10 @@ var myState = {
         platform.enableBody = true;
         var startplatform = platform.create(10,100,'platform');
         startplatform.body.immovable = true;
+
+        var testanimation = game.add.sprite(150, 150, 'testanimation');
+        testanimation.animations.add('walk');
+        testanimation.animations.play('walk', 2, true);
     },
     update : function () {
 
