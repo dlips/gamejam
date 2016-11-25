@@ -9,7 +9,7 @@ var myState = {
 
         people = game.add.group();
         people.enableBody = true;
-        var man = people.create(10,10,'man');
+        var man = people.create(10,game.world.height - 10,'man');
         man.scale.setTo(8,8);
     },
     update : function () {
