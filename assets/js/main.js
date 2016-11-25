@@ -31,7 +31,6 @@ var myState = {
         this.people = game.add.group();
         this.people.enableBody = true;
         var man = this.people.create(x, y, 'man');
-        man.scale.setTo(3,3);
     }
 };
 var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', myState);
