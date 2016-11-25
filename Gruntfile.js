@@ -63,15 +63,17 @@ module.exports = function(grunt) {
         files: '<%= jshint.gruntfile.src %>',
         tasks: ['jshint:gruntfile']
       },
-      lib_test: {
-        files: '<%= jshint.lib_test.src %>',
-        tasks: ['jshint:lib_test', 'qunit']
+      src: {
+        files: ['assets/**', 'index.html'],
+        tasks: ['default'],
       },
       options : {
-        livereload : true
+        livereload : true,
+        port : 35729
       }
     },
     connect: {
+      livereload: true,
       server: {
         options: {
           port: 8080,
