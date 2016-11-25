@@ -23,8 +23,8 @@ Nach der Installation das Repository clonen:
 Wenn ihr das geschafft habt oeffnet die README.md und tragt in folgende List euren Namen ein:
 
 * Dman
-* CSchiel
-* JANSENDERSPAST
+* Cman
+* Jman
 
 Danach pusht ihr die Aenderungen ins Repo in dem ihr in der Konsole in Ordner `gamejam` folgendes ausfuehrt: `git push`. 
 Daraufhin werdet ihr nach euren github Benutzernamen und Passwort gefragt den ihr natuerlich schon 
