@@ -11,7 +11,7 @@ var myState = {
         people = game.add.group();
         people.enableBody = true;
         var man = people.create(10, game.world.height - 350, 'man');
-        man.scale.setTo(4,4);
+        man.scale.setTo(3,3);
     },
     update : function () {
 
