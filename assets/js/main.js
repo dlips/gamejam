@@ -6,12 +6,6 @@ var myState = {
     },
     create : function () {
         game.physics.startSystem(Phaser.Physics.ARCADE);
-        game.add.sprite(0, 0, 'background');
-
-        people = game.add.group();
-        people.enableBody = true;
-        var man = people.create(10, game.world.height - 350, 'man');
-        man.scale.setTo(4,4);
 
         // Hier die Gruppe für die Plattformen
         platform = game.add.group();
@@ -23,9 +17,25 @@ var myState = {
         console.log(game.world.height - Math.ceil(game.world.height*0.05));
         console.log(Math.ceil(game.world.width*0.05));
 
+        var background = game.add.sprite(0, 0, 'background');
+        background.inputEnabled = true;
+        background.events.onInputDown.add(this.teleport, this);
+        this.people = game.add.group();
+        this.people.enableBody = true;
+        var man = this.people.create(10,10,'man');
+        man.scale.setTo(3,3);
+
     },
     update : function () {
 
+    },
+    teleport : function() {
+        var x = game.input.x;
+        var y = game.input.y;
+        this.people.destroy();
+        this.people = game.add.group();
+        this.people.enableBody = true;
+        this.people.create(x, y, 'man');
     }
 };
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', myState);
+var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', myState);

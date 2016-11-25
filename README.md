@@ -19,6 +19,7 @@ Nach der Installation das Repository clonen:
 * Email Adresse eingeben mit ` git config --global user.email "you@example.com"`
 * Benutzer eingeben mit `git config --global user.name "Your Name"`
 * Git Tutorial ueberfliegen: https://rogerdudler.github.io/git-guide/index.de.html
+* Einstellen VSC Credential Helper für Passwort: git config --global credential.helper 'cache --timeout=3600'
 
 Wenn ihr das geschafft habt oeffnet die README.md und tragt in folgende List euren Namen ein:
 
