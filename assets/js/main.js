@@ -17,9 +17,9 @@ var myState = {
         var startplatform = platform.create(10,10,'platform');
         startplatform.body.immovable = true;
 
-        var man = people.create(10, game.world.height - 250, 'man');
-        man.scale.setTo(8,8);
 
+        var man = people.create(10, game.world.height - 350, 'man');
+        man.scale.setTo(4,4);
     },
     update : function () {
 
