@@ -7,25 +7,31 @@ var myState = {
     },
     create : function () {
         game.physics.startSystem(Phaser.Physics.ARCADE);
-        game.add.sprite(0, 0, 'background');
-        
-        //männchen erstellen
-        people = game.add.group();
-        people.enableBody = true;
-        var man = people.create(10, game.world.height - 350, 'man');
-        
+
+        var background = game.add.sprite(0, 0, 'background');
+        background.inputEnabled = true;
+        background.events.onInputDown.add(this.teleport, this);
+        this.people = game.add.group();
+        this.people.enableBody = true;
+        var man = this.people.create(10,10,'man');
+        man.scale.setTo(3,3);
+
         //plattformen erstellen
         platform = game.add.group();
         platform.enableBody = true;
         var startplatform = platform.create(10,10,'platform');
         startplatform.body.immovable = true;
-
-
-        
-        man.scale.setTo(3,3);
     },
     update : function () {
 
+    },
+    teleport : function() {
+        var x = game.input.x;
+        var y = game.input.y;
+        this.people.destroy();
+        this.people = game.add.group();
+        this.people.enableBody = true;
+        this.people.create(x, y, 'man');
     }
 };
 var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', myState);
