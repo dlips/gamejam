@@ -7,16 +7,6 @@ var myState = {
     create : function () {
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
-        // Hier die Gruppe für die Plattformen
-        platform = game.add.group();
-        platform.enableBody = true;
-
-        // Füge startplatform hinzu
-        var startplatform = platform.create(Math.ceil(game.world.width*0.05),game.world.height - Math.ceil(game.world.height*0.05),'platform');
-        startplatform.body.immovable = true;
-        console.log(game.world.height - Math.ceil(game.world.height*0.05));
-        console.log(Math.ceil(game.world.width*0.05));
-
         var background = game.add.sprite(0, 0, 'background');
         background.inputEnabled = true;
         background.events.onInputDown.add(this.teleport, this);
@@ -25,6 +15,11 @@ var myState = {
         var man = this.people.create(10,10,'man');
         man.scale.setTo(3,3);
 
+        //plattformen erstellen
+        platform = game.add.group();
+        platform.enableBody = true;
+        var startplatform = platform.create(10,100,'platform');
+        startplatform.body.immovable = true;
     },
     update : function () {
 
@@ -35,7 +30,8 @@ var myState = {
         this.people.destroy();
         this.people = game.add.group();
         this.people.enableBody = true;
-        this.people.create(x, y, 'man');
+        var man = this.people.create(x, y, 'man');
+        man.scale.setTo(3,3);
     }
 };
 var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', myState);
