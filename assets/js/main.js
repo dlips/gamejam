@@ -5,14 +5,23 @@ var myState = {
     },
     create : function () {
         game.physics.startSystem(Phaser.Physics.ARCADE);
-        game.add.sprite(0, 0, 'background');
-
-        people = game.add.group();
-        people.enableBody = true;
-        var man = people.create(10,10,'man');
+        var background = game.add.sprite(0, 0, 'background');
+        background.inputEnabled = true;
+        background.events.onInputDown.add(this.teleport, this);
+        this.people = game.add.group();
+        this.people.enableBody = true;
+        var man = this.people.create(10,10,'man');
     },
     update : function () {
 
+    },
+    teleport : function() {
+        var x = game.input.x;
+        var y = game.input.y;
+        this.people.destroy();
+        this.people = game.add.group();
+        this.people.enableBody = true;
+        this.people.create(x, y, 'man');
     }
 };
 
