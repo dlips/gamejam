@@ -52,8 +52,8 @@ var Player = {
         this.sprite.animations.play('player-fall', 15, true);
     },
     chargingAnimation : function () {
+        this.sprite.body.setZeroVelocity();
         this.sprite.body.motionState = Phaser.Physics.P2.Body.STATIC;
-        
         this.sprite.loadTexture('player-idle', 0);
         this.sprite.animations.add('player-idle');
         this.sprite.animations.play('player-idle', 24, true);
@@ -112,9 +112,8 @@ var Player = {
     landedOnSecondPlatform : function() {
         if(this.player.state == 'falling') {
             this.moveToReferencePosition();
-            this.state = 'standing';
-            this.chargingAnimation();
-            this.sprite.body.setZeroVelocity();
+            this.player.state = 'standing';
+            this.player.sprite.body.setZeroVelocity();
             points = points + 1.0;
         }
     }
@@ -231,10 +230,6 @@ var Start = {
                 var x = this.player.sprite.body.x + this.power * Math.cos(this.angle*2*Math.PI/360);
                 var y = this.player.sprite.body.y - this.power * Math.sin(this.angle*2*Math.PI/360);
                 this.player.teleport(x, y);
-                console.log("Power: " + this.power);
-                console.log("Angle: " + this.angle);
-                console.log("x: " + x);
-                console.log("y: " + y);
             }
         }, this);
     },
@@ -270,10 +265,9 @@ var Start = {
             this.secondplatform.body.y = dy.secondCloud;
             this.player.sprite.body.y  = dy.player;
             this.startplatform.body.y  = dy.firstCloud;
-            console.log("should stop moving! " + this.secondplatform.body.x + " " +  cloudRef.x);
             if (Math.round(this.secondplatform.body.x) == cloudRef.x) {
                 this.moveCloud = false;
-                
+                this.player.chargingAnimation();
             } 
         }
         if(this.player.sprite.body.y<0 && this.arrowsprite == null){
