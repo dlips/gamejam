@@ -1,6 +1,7 @@
-var fullchargtime = 10;
+var fullchargtime = 6;
 var ctime = 0.0;
 var points = 0.0;
+var playeroffset = 68;
 
 var Player = {
     init : function (x, y) {
@@ -54,6 +55,18 @@ var Player = {
         this.sprite.loadTexture('player-idle', 0);
         this.sprite.animations.add('player-idle');
         this.sprite.animations.play('player-idle', 24, true);
+
+        var frame1 = [];
+        for (var i = 0; i < 31; i++) {
+            frame1.push(i);
+        }
+        for (var i = 1; i < 30; i++) {
+            frame1.push(30-i);
+        }
+        this.anglebar = game.add.sprite(this.sprite.body.x, this.sprite.body.y-playeroffset, 'charging1');
+        this.anglebar.animations.add('charging1',frame1);
+        this.anglebar.animations.play('charging1', 5, true);
+        
         ctime = game.time.totalElapsedSeconds();
         
         this.angleCounter = game.add.text(game.world.centerX, game.world.centerY, this.aimAngle, { 
@@ -121,6 +134,7 @@ var Start = {
         game.load.spritesheet('player-beam-in', '/assets/img/man_tele_hin.png', 68, 72, 13);
         game.load.spritesheet('player-beam-out', '/assets/img/man_tele_rück.png', 68, 72, 13);
         game.load.spritesheet('player-fall', '/assets/img/man_fall.png', 68, 100, 2);
+        game.load.spritesheet('charging1', '/assets/img/circle.png', 90, 90, 31);
 
         game.load.physics('physicsData', 'assets/physics/sprites.json');
     },
