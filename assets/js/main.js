@@ -1,4 +1,4 @@
-var fullchargtime = 6;
+var fullchargtime = 3;
 var ctime = 0.0;
 var cloudRef = {x: 75, y: 560};
 var points = 0.0;
@@ -18,10 +18,14 @@ var Player = {
 	    this.sprite.body.setZeroDamping();
         this.state = 'falling';
         this.fallingAnimation();
+        this.powerbar = game.add.graphics(0,0);
+        this.powerbarborder = game.add.graphics(0,0);
     },
     teleport : function (x, y) {
-        this.angleCounter.destroy();
+        //this.angleCounter.destroy();
         this.anglebar.destroy();
+        this.powerbar.clear();
+        this.powerbarborder.clear();
         game.time.events.remove(this.powerTimer);
         this.state = 'beaming';
         this.sprite.loadTexture('player-beam-in', 0);
@@ -67,11 +71,11 @@ var Player = {
         }
         this.anglebar = game.add.sprite(this.sprite.body.x, this.sprite.body.y-playeroffset, 'charging1');
         this.anglebar.animations.add('charging1',frame1);
-        this.anglebar.animations.play('charging1', 5, true);
+        this.anglebar.animations.play('charging1', 10, true);
         
         ctime = game.time.totalElapsedSeconds();
         
-        this.angleCounter = game.add.text(game.world.centerX, game.world.centerY, this.aimAngle, { 
+        /*this.angleCounter = game.add.text(game.world.centerX, game.world.centerY, this.aimAngle, { 
             font: "64px Arial", 
             fill: "#ffffff", 
             align: "center" 
@@ -83,20 +87,26 @@ var Player = {
                 angle = 180 - angle;
             }
             this.angleCounter.setText(angle);
-        }, this);
+        }, this);*/
     },
     chargingAnimation2 : function () {
         this.anglebar.animations.paused = true;
-    
+        
+        this.powerbarborder.lineStyle(2, 0x0099FF, 1);
+        this.powerbarborder.drawRect(125, 550, 100, 20);
+        
         ctime = game.time.totalElapsedSeconds();
         game.time.events.remove(this.angleTimer);
-        this.powerTimer = game.time.events.loop(Phaser.Timer.SECOND / 5, function() {
+        this.powerTimer = game.time.events.loop(Phaser.Timer.SECOND / 50, function() {
             var t = game.time.totalElapsedSeconds();
-            var power = (1000 * (t-ctime)/fullchargtime) % 2000;
-            if (power > 1000) {
-                power = 2000 - power;
+            var power = (100* (t-ctime)/fullchargtime) % 200;
+            if (power > 100) {
+                power = 200 - power;
             }
-            this.angleCounter.setText(power);
+            this.powerbar.clear();
+            this.powerbar.lineStyle(2, 0x0099FF, 1);
+            this.powerbar.drawRect(125, 550, power, 20);
+            this.powerbar.beginFill(0x0099FF);
         }, this);
     },
     isFalling : function () {
