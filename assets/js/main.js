@@ -1,4 +1,7 @@
 var myState = {
+    aimAngularVelocity : (90 / 3),
+    teleportMaxRange : 200,
+    aimRangeSpeed : (200 / 3),
     preload :  function () {
         game.load.image('background', 'assets/img/background.png');
         game.load.image('man', 'assets/img/man.png');
@@ -8,17 +11,23 @@ var myState = {
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
         var background = game.add.sprite(0, 0, 'background');
-        background.inputEnabled = true;
-        background.events.onInputDown.add(this.teleport, this);
-        this.people = game.add.group();
-        this.people.enableBody = true;
-        var man = this.people.create(10,10,'man');
-        game.physics.arcade.enable(man);
-        man.body.bounce.y = 0.2;
-        man.body.gravity.y = 300;
-        man.body.collideWorldBounds = true;
+        background.inputEnabled = true;     
 
-        //plattformen erstellen
+        // Player definieren
+        this.player = game.add.sprite(10,10,'man');
+        this.player.enableBody = true;
+        game.physics.arcade.enable(this.player);
+        this.player.body.bounce.y = 0.2;
+        this.player.body.gravity.y = 300;
+        this.player.body.collideWorldBounds = true;
+
+        background.events.onInputDown.add(function() {
+            var x = game.input.x;
+            var y = game.input.y;
+            this.teleport(x, y);
+        }, this);
+
+        // Plattformen erstellen
         platform = game.add.group();
         platform.enableBody = true;
 
@@ -30,19 +39,11 @@ var myState = {
 
     },
     update : function () {
-        var hitPlatform = game.physics.arcade.collide(man, platform);
+        var hitPlatform = game.physics.arcade.collide(this.player, platform);
     },
-    teleport : function() {
-        var x = game.input.x;
-        var y = game.input.y;
-        this.people.destroy();
-        this.people = game.add.group();
-        this.people.enableBody = true;
-        var man = this.people.create(x, y, 'man');
-        game.physics.arcade.enable(man);
-        man.body.bounce.y = 0.2;
-        man.body.gravity.y = 300;
-        man.body.collideWorldBounds = true;
+    teleport : function(x, y) {
+        this.player.x = x;
+        this.player.y = y;
     }
 };
 var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', myState);
