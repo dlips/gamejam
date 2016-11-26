@@ -144,14 +144,13 @@ var Start = {
         game.load.physics('physicsData', 'assets/physics/sprites.json');
     },
     create : function () {
-        this.moveCloud = false;
         //Physics & Collision
         game.physics.startSystem(Phaser.Physics.P2JS);
         game.physics.p2.setImpactEvents(true);
         game.physics.p2.restitution = 0;
         game.physics.p2.gravity.y = 600;
         this.playerCollisionGroup = game.physics.p2.createCollisionGroup();
-        var startPlatformCollisionGroup = game.physics.p2.createCollisionGroup();
+        this.startPlatformCollisionGroup = game.physics.p2.createCollisionGroup();
         this.secondPlatformCollisionGroup = game.physics.p2.createCollisionGroup();
         
         // Background
@@ -180,19 +179,19 @@ var Start = {
         this.player = Player;
         this.player.init(50, 400);
         this.player.sprite.body.setCollisionGroup(this.playerCollisionGroup);
-        this.player.sprite.body.collides(startPlatformCollisionGroup, this.player.landedOnStartPlatform, this);
+        this.player.sprite.body.collides(this.startPlatformCollisionGroup, this.player.landedOnStartPlatform, this);
         this.player.sprite.body.collides(this.secondPlatformCollisionGroup, this.player.landedOnSecondPlatform, this);
 
         // Plattformen erstellen
-        var platform = game.add.group();
-        platform.enableBody = true;
-        platform.physicsBodyType = Phaser.Physics.P2JS;
-        this.startplatform = platform.create(cloudRef.x, cloudRef.y, 'cloud');
+        this.platformGroup = game.add.group();
+        this.platformGroup.enableBody = true;
+        this.platformGroup.physicsBodyType = Phaser.Physics.P2JS;
+        this.startplatform = this.platformGroup.create(cloudRef.x, cloudRef.y, 'cloud');
         this.startplatform.body.setRectangle(135,31);
         this.startplatform.body.static = true;
-        this.startplatform.body.setCollisionGroup(startPlatformCollisionGroup);
+        this.startplatform.body.setCollisionGroup(this.startPlatformCollisionGroup);
         this.startplatform.body.collides(this.playerCollisionGroup);
-        this.spawnsecondcloud(platform);
+        this.spawnsecondcloud();
         this.arrowsprite = null;
            
         // Points
@@ -247,29 +246,7 @@ var Start = {
                 game.state.restart();
             }, this);
         }
-        if (this.moveCloud) {
-            var inc = 1;
-            if (this.secondplatform.body.x > cloudRef.x) {
-                inc = -1;
-            } else {
-                inc = 1;
-            }
-            this.secondplatform.body.x += inc;
-            this.player.sprite.body.x  += inc;
-            this.startplatform.body.x  += inc;
-            var dy = this.referenceMovement({
-                secondCloud: this.secondplatform.body.x,
-                firstCloud: this.startplatform.body.x,
-                player: this.player.sprite.body.x
-            });
-            this.secondplatform.body.y = dy.secondCloud;
-            this.player.sprite.body.y  = dy.player;
-            this.startplatform.body.y  = dy.firstCloud;
-            if (Math.round(this.secondplatform.body.x) == cloudRef.x) {
-                this.moveCloud = false;
-                this.player.chargingAnimation();
-            } 
-        }
+        
         if(this.player.sprite.body.y<0 && this.arrowsprite == null){
             this.arrowsprite = game.add.sprite(this.arrowspawnx, this.arrowspawny, 'arrowman');
             this.arrowsprite.visible = false;
@@ -288,10 +265,16 @@ var Start = {
         }
         this.pointtext.text = points + '';
     },
-    spawnsecondcloud : function (platform) {
-        this.cloudspawnx = game.rnd.integerInRange(this.player.sprite.body.x, this.game.width);
-        this.cloudspawny = game.rnd.integerInRange(this.game.height-this.player.sprite.body.y, this.game.height);
-        var secondplatform = platform.create(this.cloudspawnx,this.game.height-this.cloudspawny,'cloud');
+    swapClouds : function () {
+        this.startplatform.destroy();
+        this.startplatform = this.secondplatform;
+        this.startPlatformCollisionGroup = this.secondPlatformCollisionGroup;
+        this.spawnsecondcloud();
+    },
+    spawnsecondcloud : function () {
+        this.cloudspawnx = game.rnd.integerInRange(this.player.sprite.body.x+250, this.game.width-100);
+        this.cloudspawny = game.rnd.integerInRange(this.game.height-this.player.sprite.body.y+250, this.game.height);
+        var secondplatform = this.platformGroup.create(this.cloudspawnx,this.game.height-this.cloudspawny,'cloud');
         secondplatform.body.setRectangle(135,31);
         secondplatform.body.static = true;
         secondplatform.body.setCollisionGroup(this.secondPlatformCollisionGroup);
@@ -299,18 +282,23 @@ var Start = {
         this.secondplatform = secondplatform;
     },
     moveToReferencePosition : function () {
-        var spSecondCloud = {x: this.secondplatform.body.x, y: this.secondplatform.body.y};
-        var spPlayer = {x: this.player.sprite.body.x, y: this.player.sprite.body.y};
-        var spFirstCloud = {x: this.startplatform.body.x, y: this.startplatform.body.y};
-        var m = (spSecondCloud.y - cloudRef.y) / (spSecondCloud.x - cloudRef.x);
-        this.referenceMovement = function (xp) {
-            return {
-                secondCloud : (Math.round(m*(xp.secondCloud - spSecondCloud.x)) + spSecondCloud.y),
-                firstCloud :  (Math.round(m*(xp.firstCloud - spFirstCloud.x)) + spFirstCloud.y),
-                player : (Math.round(m*(xp.player - spPlayer.x)) + spPlayer.y)
-            };
-        }
-        this.moveCloud = true;
+        var time = 1500;
+        var tweenSecondPlatform = game.add.tween(this.secondplatform.body);
+        tweenSecondPlatform.to({x: cloudRef.x, y: cloudRef.y}, time);
+
+        var dx = this.secondplatform.x - cloudRef.x;
+        var dy = this.secondplatform.y - cloudRef.y;
+        var tweenFirstPlatform = game.add.tween(this.startplatform.body);
+        tweenFirstPlatform.to({x: this.startplatform.x-dx, y: this.startplatform.y-dy}, time);
+        var tweenPlayer = game.add.tween(this.player.sprite.body);
+        tweenPlayer.to({x: this.player.sprite.body.x-dx, y: this.player.sprite.body.y-dy}, time);
+        tweenPlayer.onComplete.add(function () {
+            this.swapClouds();
+            this.player.chargingAnimation();
+        }, this);
+        tweenSecondPlatform.start();
+        tweenFirstPlatform.start();
+        tweenPlayer.start();
     }
 };
 
