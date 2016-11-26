@@ -5,9 +5,11 @@ var myState = {
         game.load.image('background', 'assets/img/background.png');
         game.load.image('man', 'assets/img/man.png');
         game.load.image('platform', 'assets/img/simpleplatform.png');
+        game.load.image('moon', 'assets/img/moon.png');
         game.load.spritesheet('crosshair', '/assets/img/circle.png', 50, 50, 6);
         game.load.spritesheet('player-idle', '/assets/img/man_stand.png', 68, 72, 5);
-        this.game.load.image('moon', 'assets/img/moon.png');
+        game.load.spritesheet('player-beam-in', '/assets/img/man_tele_hin.png', 68, 72, 13);
+        game.load.spritesheet('player-beam-out', '/assets/img/man_tele_rück.png', 68, 72, 13);
     },
     create : function () {
         game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -38,18 +40,30 @@ var myState = {
         background.events.onInputDown.add(function() {
             var x = game.input.x;
             var y = game.input.y;
-            //this.teleport(x, y);
-            if (this.inputMode == 'idle') {
-                this.inputMode = 'angel';
-                this.crosshair = game.add.sprite(this.player.x+60, this.player.y-20, 'crosshair');
-                this.crosshair.scale.setTo(2, 2);
-                var animation = this.crosshair.animations.add('aim');
-                this.crosshair.animations.play('aim', 2, true);
-                console.log("hello");
-            } else if (this.inputMode == 'angel') {
-                this.inputMode = 'idle';
-                this.crosshair.destroy();
-            }
+            this.player.loadTexture('player-beam-in', 0);
+            var animationOut = this.player.animations.add('beam');
+            this.player.animations.play('beam', 50, false);
+            animationOut.onComplete.add(function () {
+                this.teleport(x, y);
+                this.player.loadTexture('player-beam-out');
+                var animationIn = this.player.animations.add('beam2');
+                this.player.animations.play('beam2', 50, false);
+                animationIn.onComplete.add(function () {
+                    this.player.loadTexture('player-idle');
+                }, this);
+            }, this);
+            
+            // if (this.inputMode == 'idle') {
+            //     this.inputMode = 'angel';
+            //     this.crosshair = game.add.sprite(this.player.x+60, this.player.y-20, 'crosshair');
+            //     this.crosshair.scale.setTo(2, 2);
+            //     var animation = this.crosshair.animations.add('aim');
+            //     this.crosshair.animations.play('aim', 2, true);
+            //     console.log("hello");
+            // } else if (this.inputMode == 'angel') {
+            //     this.inputMode = 'idle';
+            //     this.crosshair.destroy();
+            // }
         }, this);
 
         // Plattformen erstellen
