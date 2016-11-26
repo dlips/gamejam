@@ -278,7 +278,9 @@ var Start = {
     swapClouds : function () {
         this.startplatform.destroy();
         this.startplatform = this.secondplatform;
-        this.startPlatformCollisionGroup = this.secondPlatformCollisionGroup;
+        this.startplatform.body.removeCollisionGroup(this.secondPlatformCollisionGroup);
+        this.startplatform.body.setCollisionGroup(this.startPlatformCollisionGroup);
+        this.startplatform.body.collides(this.playerCollisionGroup);
         this.spawnsecondcloud();
     },
     spawnsecondcloud : function () {
@@ -304,6 +306,8 @@ var Start = {
         tweenPlayer.to({x: this.player.sprite.body.x-dx, y: this.player.sprite.body.y-dy}, time);
         tweenPlayer.onComplete.add(function () {
             this.swapClouds();
+            //this.player.sprite.body.collides(this.startPlatformCollisionGroup, this.player.landedOnStartPlatform, this);
+            //this.player.sprite.body.collides(this.secondPlatformCollisionGroup, this.player.landedOnSecondPlatform, this);
             this.player.chargingAnimation();
         }, this);
         tweenSecondPlatform.start();
