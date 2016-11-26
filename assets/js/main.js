@@ -5,6 +5,7 @@ var myState = {
         game.load.image('background', 'assets/img/background.png');
         game.load.image('man', 'assets/img/man.png');
         game.load.image('platform', 'assets/img/simpleplatform.png');
+        game.load.image('moon', 'assets/img/moon.png');
         game.load.spritesheet('crosshair', '/assets/img/circle.png', 50, 50, 6);
         game.load.spritesheet('player-idle', '/assets/img/man_stand.png', 68, 72, 5);
         game.load.spritesheet('player-beam-in', '/assets/img/man_tele_hin.png', 68, 72, 13);
@@ -13,8 +14,16 @@ var myState = {
     create : function () {
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
+        // Background
         var background = game.add.sprite(0, 0, 'background');
         background.inputEnabled = true;     
+
+        this.mountainsBack = this.game.add.tileSprite(0, 
+            this.game.height - this.game.cache.getImage('moon').height+75, 
+            this.game.width, 
+            this.game.cache.getImage('moon').height, 
+            'moon'
+        );
 
         // Player definieren
         this.player = game.add.sprite(10, 400, 'player-idle');
@@ -61,7 +70,7 @@ var myState = {
         platform = game.add.group();
         platform.enableBody = true;
 
-        var startplatform = platform.create(10,500,'platform');
+        var startplatform = platform.create(10,560,'platform');
         startplatform.body.immovable = true;
 
         var secondplatform = platform.create(400,300,'platform');
@@ -70,6 +79,7 @@ var myState = {
     },
     update : function () {
         var hitPlatform = game.physics.arcade.collide(this.player, platform);
+        this.mountainsBack.tilePosition.x -= 0.05;
     },
     teleport : function(x, y) {
         this.player.x = x;
