@@ -190,17 +190,13 @@ var Start = {
         startplatform.body.collides(this.playerCollisionGroup);
 
         this.spawnsecondcloud(platform);
-<<<<<<< HEAD
         this.arrowsprite = null;
-        
-=======
            
         // Points
         points = 0.0;
         this.pointtext = game.add.bitmapText(0, -20, 'desyrel', points+'', 64);
         this.pointtext.anchor.x = 0;
         this.pointtext.anchor.y = 0;
->>>>>>> e9bf306d1c1f09fb44704bb0f39d9e3faf210432
 
         // Zielen
         this.inputMode = 'idle'; // angel, radius
