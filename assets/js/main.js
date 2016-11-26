@@ -48,6 +48,9 @@ var Player = {
     },
     isFalling : function () {
         return this.sprite.body.velocity.y > 0.0;
+    },
+    landedOnPlatform : function() {
+        console.log("gelandet!");
     }
 };
 
@@ -116,7 +119,8 @@ var Start = {
         startplatform.body.setRectangle(135,31);
         startplatform.body.static = true;
         startplatform.body.setCollisionGroup(platformCollisionGroup);
-        startplatform.body.collides(playerCollisionGroup);
+        startplatform.body.collides(playerCollisionGroup, this.player.landedOnPlatform, this);
+
         var secondplatform = platform.create(400,300,'platform');
         secondplatform.body.setRectangle(135,31);
         secondplatform.body.static = true;
