@@ -95,6 +95,7 @@ var Player = {
     }
 };
 
+
 var Start = {
     aimAngularVelocity : (90 / 3),
     aimRangeSpeed : (200 / 3),
@@ -163,11 +164,9 @@ var Start = {
         startplatform.body.static = true;
         startplatform.body.setCollisionGroup(startPlatformCollisionGroup);
         startplatform.body.collides(playerCollisionGroup);
-        var secondplatform = platform.create(400,300,'cloud');
-        secondplatform.body.setRectangle(135,31);
-        secondplatform.body.static = true;
-        secondplatform.body.setCollisionGroup(secondPlatformCollisionGroup);
-        secondplatform.body.collides(playerCollisionGroup);
+
+        this.spawnsecondcloud(platform);
+        
 
        
         
@@ -213,6 +212,17 @@ var Start = {
         this.mountainsBack.tilePosition.x -= 0.1;
 
         
+    },
+    spawnsecondcloud : function (platform) {
+        this.cloudspawnx = game.rnd.integerInRange(this.player.sprite.body.x, this.game.width);
+        this.cloudspawny = game.rnd.integerInRange(this.game.height-this.player.sprite.body.y, this.game.height);
+        var secondplatform = platform.create(this.cloudspawnx,this.game.height-this.cloudspawny,'cloud');
+        secondplatform.body.setRectangle(135,31);
+        secondplatform.body.static = true;
+        secondplatform.body.setCollisionGroup(secondPlatformCollisionGroup);
+        secondplatform.body.collides(playerCollisionGroup);
+
+
     }
     
 };
