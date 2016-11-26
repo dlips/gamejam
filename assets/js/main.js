@@ -27,7 +27,7 @@ var myState = {
         );
         
         this.mountainsBack = this.game.add.tileSprite(0, 
-            this.game.height - this.game.cache.getImage('mountains').height, 
+            this.game.height - this.game.cache.getImage('mountains').height-75, 
             this.game.width, 
             this.game.cache.getImage('mountains').height, 
             'mountains'
