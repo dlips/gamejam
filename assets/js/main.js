@@ -64,6 +64,7 @@ var Start = {
         game.load.image('moon', 'assets/img/moon.png');
         game.load.image('mountains1', 'assets/img/mountain1.png');
         game.load.image('mountains2', 'assets/img/mountain2.png');
+        game.load.image('cloud', 'assets/img/simplecloud.png');
         game.load.spritesheet('crosshair', '/assets/img/circle.png', 50, 50, 6);
         game.load.spritesheet('player-idle', '/assets/img/man_stand.png', 68, 72, 5);
         game.load.spritesheet('player-beam-in', '/assets/img/man_tele_hin.png', 68, 72, 13);
@@ -77,11 +78,10 @@ var Start = {
         //Physics & Collision
         game.physics.startSystem(Phaser.Physics.P2JS);
         game.physics.p2.setImpactEvents(true);
-        game.physics.p2.restitution = 0.8;
+        game.physics.p2.restitution = 0;
         game.physics.p2.gravity.y = 300;
         var playerCollisionGroup = game.physics.p2.createCollisionGroup();
         var platformCollisionGroup = game.physics.p2.createCollisionGroup();
-        game.physics.p2.updateBoundsCollisionGroup();
         
         // Background
         var background = game.add.sprite(0, 0, 'background');
@@ -115,13 +115,12 @@ var Start = {
         var platform = game.add.group();
         platform.enableBody = true;
         platform.physicsBodyType = Phaser.Physics.P2JS;
-        var startplatform = platform.create(75,560,'platform');
+        var startplatform = platform.create(75,560,'cloud');
         startplatform.body.setRectangle(135,31);
         startplatform.body.static = true;
         startplatform.body.setCollisionGroup(platformCollisionGroup);
         startplatform.body.collides(playerCollisionGroup, this.player.landedOnPlatform, this);
-
-        var secondplatform = platform.create(400,300,'platform');
+        var secondplatform = platform.create(400,300,'cloud');
         secondplatform.body.setRectangle(135,31);
         secondplatform.body.static = true;
         secondplatform.body.setCollisionGroup(platformCollisionGroup);
