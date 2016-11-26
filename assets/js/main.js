@@ -98,7 +98,7 @@ var Start = {
             'mountains2'
         );
         this.mountainsFore = this.game.add.tileSprite(0, 
-            this.game.height - this.game.cache.getImage('mountains1').height, 
+            this.game.height - this.game.cache.getImage('mountains1').height+20, 
             this.game.width, 
             this.game.cache.getImage('mountains1').height, 
             'mountains1'
