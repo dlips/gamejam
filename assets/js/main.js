@@ -1,5 +1,6 @@
 var fullchargtime = 6;
 var ctime = 0.0;
+var cloudRef = {x: 75, y: 560};
 var points = 0.0;
 var playeroffset = 68;
 
@@ -55,8 +56,8 @@ var Player = {
         this.sprite.animations.play('player-fall', 15, true);
     },
     chargingAnimation : function () {
+        this.sprite.body.setZeroVelocity();
         this.sprite.body.motionState = Phaser.Physics.P2.Body.STATIC;
-        
         this.sprite.loadTexture('player-idle', 0);
         this.sprite.animations.add('player-idle');
         this.sprite.animations.play('player-idle', 24, true);
@@ -112,17 +113,17 @@ var Player = {
         return this.sprite.body.velocity.y > 0.1;
     },
     landedOnStartPlatform : function() {
-        if(this.state == 'falling') {
-            this.state = 'standing';
-            this.chargingAnimation();
-            this.sprite.body.setZeroVelocity();
+        if(this.player.state == 'falling') {
+            this.player.state = 'standing';
+            this.player.chargingAnimation();
+            this.player.sprite.body.setZeroVelocity();
         }
     },
     landedOnSecondPlatform : function() {
-        if(this.state == 'falling') {
-            this.state = 'standing';
-            this.chargingAnimation();
-            this.sprite.body.setZeroVelocity();
+        if(this.player.state == 'falling') {
+            this.moveToReferencePosition();
+            this.player.state = 'standing';
+            this.player.sprite.body.setZeroVelocity();
             points = points + 1.0;
         }
     }
@@ -153,8 +154,8 @@ var Start = {
         game.load.physics('physicsData', 'assets/physics/sprites.json');
     },
     create : function () {
-
-        // Physics & Collision
+        this.moveCloud = false;
+        //Physics & Collision
         game.physics.startSystem(Phaser.Physics.P2JS);
         game.physics.p2.setImpactEvents(true);
         game.physics.p2.restitution = 0;
@@ -189,19 +190,18 @@ var Start = {
         this.player = Player;
         this.player.init(50, 400);
         this.player.sprite.body.setCollisionGroup(this.playerCollisionGroup);
-        this.player.sprite.body.collides(startPlatformCollisionGroup, this.player.landedOnStartPlatform, this.player);
-        this.player.sprite.body.collides(this.secondPlatformCollisionGroup, this.player.landedOnSecondPlatform, this.player);
+        this.player.sprite.body.collides(startPlatformCollisionGroup, this.player.landedOnStartPlatform, this);
+        this.player.sprite.body.collides(this.secondPlatformCollisionGroup, this.player.landedOnSecondPlatform, this);
 
         // Plattformen erstellen
         var platform = game.add.group();
         platform.enableBody = true;
         platform.physicsBodyType = Phaser.Physics.P2JS;
-        var startplatform = platform.create(75,560,'cloud');
-        startplatform.body.setRectangle(135,31);
-        startplatform.body.static = true;
-        startplatform.body.setCollisionGroup(startPlatformCollisionGroup);
-        startplatform.body.collides(this.playerCollisionGroup);
-
+        this.startplatform = platform.create(cloudRef.x, cloudRef.y, 'cloud');
+        this.startplatform.body.setRectangle(135,31);
+        this.startplatform.body.static = true;
+        this.startplatform.body.setCollisionGroup(startPlatformCollisionGroup);
+        this.startplatform.body.collides(this.playerCollisionGroup);
         this.spawnsecondcloud(platform);
         this.arrowsprite = null;
            
@@ -240,10 +240,6 @@ var Start = {
                 var x = this.player.sprite.body.x + this.power * Math.cos(this.angle*2*Math.PI/360);
                 var y = this.player.sprite.body.y - this.power * Math.sin(this.angle*2*Math.PI/360);
                 this.player.teleport(x, y);
-                console.log("Power: " + this.power);
-                console.log("Angle: " + this.angle);
-                console.log("x: " + x);
-                console.log("y: " + y);
             }
         }, this);
     },
@@ -260,6 +256,29 @@ var Start = {
             text.events.onInputDown.add(function() {
                 game.state.restart();
             }, this);
+        }
+        if (this.moveCloud) {
+            var inc = 1;
+            if (this.secondplatform.body.x > cloudRef.x) {
+                inc = -1;
+            } else {
+                inc = 1;
+            }
+            this.secondplatform.body.x += inc;
+            this.player.sprite.body.x  += inc;
+            this.startplatform.body.x  += inc;
+            var dy = this.referenceMovement({
+                secondCloud: this.secondplatform.body.x,
+                firstCloud: this.startplatform.body.x,
+                player: this.player.sprite.body.x
+            });
+            this.secondplatform.body.y = dy.secondCloud;
+            this.player.sprite.body.y  = dy.player;
+            this.startplatform.body.y  = dy.firstCloud;
+            if (Math.round(this.secondplatform.body.x) == cloudRef.x) {
+                this.moveCloud = false;
+                this.player.chargingAnimation();
+            } 
         }
         if(this.player.sprite.body.y<0 && this.arrowsprite == null){
             this.arrowsprite = game.add.sprite(this.arrowspawnx, this.arrowspawny, 'arrowman');
@@ -287,9 +306,22 @@ var Start = {
         secondplatform.body.static = true;
         secondplatform.body.setCollisionGroup(this.secondPlatformCollisionGroup);
         secondplatform.body.collides(this.playerCollisionGroup);
-
-
+        this.secondplatform = secondplatform;
     },
+    moveToReferencePosition : function () {
+        var spSecondCloud = {x: this.secondplatform.body.x, y: this.secondplatform.body.y};
+        var spPlayer = {x: this.player.sprite.body.x, y: this.player.sprite.body.y};
+        var spFirstCloud = {x: this.startplatform.body.x, y: this.startplatform.body.y};
+        var m = (spSecondCloud.y - cloudRef.y) / (spSecondCloud.x - cloudRef.x);
+        this.referenceMovement = function (xp) {
+            return {
+                secondCloud : (Math.round(m*(xp.secondCloud - spSecondCloud.x)) + spSecondCloud.y),
+                firstCloud :  (Math.round(m*(xp.firstCloud - spFirstCloud.x)) + spFirstCloud.y),
+                player : (Math.round(m*(xp.player - spPlayer.x)) + spPlayer.y)
+            };
+        }
+        this.moveCloud = true;
+    }
 };
 
 var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', Start);
