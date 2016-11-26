@@ -79,7 +79,7 @@ var myState = {
     },
     update : function () {
         var hitPlatform = game.physics.arcade.collide(this.player, platform);
-        this.mountainsBack.tilePosition.x -= 0.05;
+        this.mountainsBack.tilePosition.x -= 0.5;
     },
     teleport : function(x, y) {
         this.player.x = x;
