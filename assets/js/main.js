@@ -1,4 +1,4 @@
-var fullchargtime = 6;
+var fullchargtime = 3;
 var ctime = 0.0;
 var cloudRef = {x: 75, y: 560};
 var points = 0.0;
@@ -71,7 +71,7 @@ var Player = {
         }
         this.anglebar = game.add.sprite(this.sprite.body.x, this.sprite.body.y-playeroffset, 'charging1');
         this.anglebar.animations.add('charging1',frame1);
-        this.anglebar.animations.play('charging1', 5, true);
+        this.anglebar.animations.play('charging1', 10, true);
         
         ctime = game.time.totalElapsedSeconds();
         
