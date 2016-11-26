@@ -12,9 +12,19 @@ var myState = {
         game.load.spritesheet('player-beam-in', '/assets/img/man_tele_hin.png', 68, 72, 13);
         game.load.spritesheet('player-beam-out', '/assets/img/man_tele_rück.png', 68, 72, 13);
         game.load.spritesheet('player-fall', '/assets/img/man_fall.png', 44, 100, 2);
+
+        game.load.physics('physicsData', 'assets/physics/sprites.json');
     },
     create : function () {
-        game.physics.startSystem(Phaser.Physics.ARCADE);
+        game.physics.startSystem(Phaser.Physics.P2JS);
+        game.physics.p2.setImpactEvents(true);
+        game.physics.p2.restitution = 0.8;
+        game.physics.p2.gravity.y = 300;
+
+        var playerCollisionGroup = game.physics.p2.createCollisionGroup();
+        var platformCollisionGroup = game.physics.p2.createCollisionGroup();
+
+        game.physics.p2.updateBoundsCollisionGroup();
 
         var background = game.add.sprite(0, 0, 'background');
         background.inputEnabled = true;     
@@ -34,13 +44,17 @@ var myState = {
         );
 
         // Player definieren
-        this.player = game.add.sprite(10, 400, 'player-idle');
-        this.player.enableBody = true;
+        this.player = game.add.sprite(20, 400, 'player-idle');
+        game.physics.p2.enable(this.player, true);
+        this.player.body.setRectangle(20,68);
+        //this.player.body.loadPolygon('physicsData','idle-man');
+        this.player.body.setCollisionGroup(playerCollisionGroup);
+        this.player.body.gravity.y = 300;
+
         this.player.animations.add('player-idle');
         this.player.animations.play('player-idle', 24, true);
-        game.physics.arcade.enable(this.player);
+        
         this.player.body.bounce.y = 0.0;
-        this.player.body.gravity.y = 300;
         this.player.body.collideWorldBounds = true;
         this.inputMode = 'idle'; // angel, radius
         this.crosshair = game.make.sprite('crosshair');
@@ -73,21 +87,31 @@ var myState = {
             //     this.inputMode = 'idle';
             //     this.crosshair.destroy();
             // }
+            
         }, this);
 
         // Plattformen erstellen
-        platform = game.add.group();
+        var platform = game.add.group();
         platform.enableBody = true;
+        platform.physicsBodyType = Phaser.Physics.P2JS;
 
-        var startplatform = platform.create(10,560,'platform');
-        startplatform.body.immovable = true;
+        var startplatform = platform.create(75,560,'platform');
+        startplatform.body.setRectangle(135,31);
+        startplatform.body.static = true;
+        startplatform.body.setCollisionGroup(platformCollisionGroup);
+        startplatform.body.collides(playerCollisionGroup);
 
         var secondplatform = platform.create(400,300,'platform');
-        secondplatform.body.immovable = true;
+        secondplatform.body.setRectangle(135,31);
+        secondplatform.body.static = true;
+        secondplatform.body.setCollisionGroup(platformCollisionGroup);
+        secondplatform.body.collides(playerCollisionGroup);
+        
+        this.player.body.collides(platformCollisionGroup);
+
         this.jumped = false;
     },
     update : function () {
-        var hitPlatform = game.physics.arcade.collide(this.player, platform);
         this.moonBack.tilePosition.x -= 0.05;
         this.mountainsBack.tilePosition.x -= 0.3;
         
@@ -101,6 +125,7 @@ var myState = {
             this.jumped = false;
         }
     },
+    
     teleport : function(x, y) {
         this.player.x = x;
         this.player.y = y;
