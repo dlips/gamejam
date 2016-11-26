@@ -86,7 +86,7 @@ var Start = {
         var background = game.add.sprite(0, 0, 'background');
         background.inputEnabled = true;    
         this.moonBack = this.game.add.tileSprite(0, 
-            this.game.height - this.game.cache.getImage('moon').height+75, 
+            this.game.height - this.game.cache.getImage('moon').height, 
             this.game.width, 
             this.game.cache.getImage('moon').height, 
             'moon'
