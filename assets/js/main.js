@@ -6,6 +6,7 @@ var Player = {
         this.sprite = game.add.sprite(x, y, 'player-idle');
         this.sprite.enableBody = true;
         game.physics.p2.enable(this.sprite, true);
+        this.sprite.body.motionState = Phaser.Physics.P2.Body.DYNAMIC;
         this.sprite.body.setRectangle(20,68);
         this.sprite.animations.add('player-idle');
         this.sprite.animations.play('player-idle', 24, true);
@@ -40,11 +41,15 @@ var Player = {
         this.sprite.body.setZeroVelocity();
     },
     fallingAnimation : function() {
+        this.sprite.body.motionState = Phaser.Physics.P2.Body.DYNAMIC;
+        
         this.sprite.loadTexture('player-fall', 0);
         this.sprite.animations.add('player-fall');
         this.sprite.animations.play('player-fall', 15, true);
     },
     chargingAnimation : function () {
+        this.sprite.body.motionState = Phaser.Physics.P2.Body.STATIC;
+        
         this.sprite.loadTexture('player-idle', 0);
         this.sprite.animations.add('player-idle');
         this.sprite.animations.play('player-idle', 24, true);
@@ -124,9 +129,9 @@ var Start = {
         game.physics.p2.setImpactEvents(true);
         game.physics.p2.restitution = 0;
         game.physics.p2.gravity.y = 600;
-        var playerCollisionGroup = game.physics.p2.createCollisionGroup();
+        this.playerCollisionGroup = game.physics.p2.createCollisionGroup();
         var startPlatformCollisionGroup = game.physics.p2.createCollisionGroup();
-        var secondPlatformCollisionGroup = game.physics.p2.createCollisionGroup();
+        this.secondPlatformCollisionGroup = game.physics.p2.createCollisionGroup();
         
         // Background
         var background = game.add.sprite(0, 0, 'background');
@@ -153,9 +158,9 @@ var Start = {
         // Player definieren
         this.player = Player;
         this.player.init(50, 400);
-        this.player.sprite.body.setCollisionGroup(playerCollisionGroup);
+        this.player.sprite.body.setCollisionGroup(this.playerCollisionGroup);
         this.player.sprite.body.collides(startPlatformCollisionGroup, this.player.landedOnStartPlatform, this.player);
-        this.player.sprite.body.collides(secondPlatformCollisionGroup, this.player.landedOnSecondPlatform, this.player);
+        this.player.sprite.body.collides(this.secondPlatformCollisionGroup, this.player.landedOnSecondPlatform, this.player);
 
         // Plattformen erstellen
         var platform = game.add.group();
@@ -165,7 +170,7 @@ var Start = {
         startplatform.body.setRectangle(135,31);
         startplatform.body.static = true;
         startplatform.body.setCollisionGroup(startPlatformCollisionGroup);
-        startplatform.body.collides(playerCollisionGroup);
+        startplatform.body.collides(this.playerCollisionGroup);
 
         this.spawnsecondcloud(platform);
         
@@ -229,8 +234,8 @@ var Start = {
         var secondplatform = platform.create(this.cloudspawnx,this.game.height-this.cloudspawny,'cloud');
         secondplatform.body.setRectangle(135,31);
         secondplatform.body.static = true;
-        secondplatform.body.setCollisionGroup(secondPlatformCollisionGroup);
-        secondplatform.body.collides(playerCollisionGroup);
+        secondplatform.body.setCollisionGroup(this.secondPlatformCollisionGroup);
+        secondplatform.body.collides(this.playerCollisionGroup);
 
 
     }
