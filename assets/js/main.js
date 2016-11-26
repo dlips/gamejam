@@ -1,5 +1,6 @@
 var fullchargtime = 10;
 var ctime = 0.0;
+var points = 0.0;
 
 var Player = {
     init : function (x, y) {
@@ -96,6 +97,7 @@ var Player = {
             this.state = 'standing';
             this.chargingAnimation();
             this.sprite.body.setZeroVelocity();
+            points = points + 1.0;
         }
     }
 };
@@ -124,7 +126,7 @@ var Start = {
     },
     create : function () {
 
-        //Physics & Collision
+        // Physics & Collision
         game.physics.startSystem(Phaser.Physics.P2JS);
         game.physics.p2.setImpactEvents(true);
         game.physics.p2.restitution = 0;
@@ -173,10 +175,13 @@ var Start = {
         startplatform.body.collides(this.playerCollisionGroup);
 
         this.spawnsecondcloud(platform);
-        
+           
+        // Points
+        points = 0.0;
+        this.pointtext = game.add.bitmapText(0, -20, 'desyrel', points+'', 64);
+        this.pointtext.anchor.x = 0;
+        this.pointtext.anchor.y = 0;
 
-       
-        
         // Zielen
         this.inputMode = 'idle'; // angel, radius
         this.crosshair = game.make.sprite('crosshair');
@@ -227,6 +232,7 @@ var Start = {
                 game.state.restart();
             }, this);
         }
+        this.pointtext.text = points + '';        
     },
     spawnsecondcloud : function (platform) {
         this.cloudspawnx = game.rnd.integerInRange(this.player.sprite.body.x, this.game.width);
