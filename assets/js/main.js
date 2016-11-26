@@ -20,6 +20,7 @@ var Player = {
     },
     teleport : function (x, y) {
         this.angleCounter.destroy();
+        this.anglebar.destroy();
         game.time.events.remove(this.powerTimer);
         this.state = 'beaming';
         this.sprite.loadTexture('player-beam-in', 0);
@@ -84,6 +85,8 @@ var Player = {
         }, this);
     },
     chargingAnimation2 : function () {
+        this.anglebar.animations.paused = true;
+    
         ctime = game.time.totalElapsedSeconds();
         game.time.events.remove(this.angleTimer);
         this.powerTimer = game.time.events.loop(Phaser.Timer.SECOND / 5, function() {
