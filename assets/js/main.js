@@ -29,10 +29,8 @@ var Player = {
         }, this);
     },
     move : function(x, y) {
-        this.sprite.body.x = x;
-        this.sprite.body.y = y;
-        this.sprite.body.velocity.x = 0;
-        this.sprite.body.velocity.y = 0;
+        this.sprite.body.reset(x, y);
+        this.sprite.body.setZeroVelocity();
     },
     setState : function(currentState) {
         if (currentState != this.state) {
@@ -98,7 +96,7 @@ var Start = {
             'mountains2'
         );
         this.mountainsFore = this.game.add.tileSprite(0, 
-            this.game.height - this.game.cache.getImage('mountains1').height, 
+            this.game.height - this.game.cache.getImage('mountains1').height+20, 
             this.game.width, 
             this.game.cache.getImage('mountains1').height, 
             'mountains1'
