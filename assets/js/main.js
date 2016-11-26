@@ -1,6 +1,8 @@
-var fullchargtime = 10;
+var fullchargtime = 6;
 var ctime = 0.0;
 var cloudRef = {x: 75, y: 560};
+var points = 0.0;
+var playeroffset = 68;
 
 var Player = {
     init : function (x, y) {
@@ -19,6 +21,7 @@ var Player = {
     },
     teleport : function (x, y) {
         this.angleCounter.destroy();
+        this.anglebar.destroy();
         game.time.events.remove(this.powerTimer);
         this.state = 'beaming';
         this.sprite.loadTexture('player-beam-in', 0);
@@ -54,6 +57,18 @@ var Player = {
         this.sprite.loadTexture('player-idle', 0);
         this.sprite.animations.add('player-idle');
         this.sprite.animations.play('player-idle', 24, true);
+
+        var frame1 = [];
+        for (var i = 0; i < 31; i++) {
+            frame1.push(i);
+        }
+        for (var i = 1; i < 30; i++) {
+            frame1.push(30-i);
+        }
+        this.anglebar = game.add.sprite(this.sprite.body.x, this.sprite.body.y-playeroffset, 'charging1');
+        this.anglebar.animations.add('charging1',frame1);
+        this.anglebar.animations.play('charging1', 5, true);
+        
         ctime = game.time.totalElapsedSeconds();
         
         this.angleCounter = game.add.text(game.world.centerX, game.world.centerY, this.aimAngle, { 
@@ -71,6 +86,8 @@ var Player = {
         }, this);
     },
     chargingAnimation2 : function () {
+        this.anglebar.animations.paused = true;
+    
         ctime = game.time.totalElapsedSeconds();
         game.time.events.remove(this.angleTimer);
         this.powerTimer = game.time.events.loop(Phaser.Timer.SECOND / 5, function() {
@@ -95,9 +112,10 @@ var Player = {
     landedOnSecondPlatform : function() {
         if(this.player.state == 'falling') {
             this.moveToReferencePosition();
-            this.player.state = 'standing';
-            this.player.chargingAnimation();
-            this.player.sprite.body.setZeroVelocity();
+            this.state = 'standing';
+            this.chargingAnimation();
+            this.sprite.body.setZeroVelocity();
+            points = points + 1.0;
         }
     }
 };
@@ -117,10 +135,12 @@ var Start = {
         game.load.image('mountains2', 'assets/img/mountain2.png');
         game.load.image('cloud', 'assets/img/simplecloud.png');
         game.load.spritesheet('crosshair', '/assets/img/circle.png', 50, 50, 6);
-        game.load.spritesheet('player-idle', '/assets/img/man_stand.png', 68, 72, 5);
+        game.load.spritesheet('player-idle', '/assets/img/man_stand.png', 68, 100, 5);
         game.load.spritesheet('player-beam-in', '/assets/img/man_tele_hin.png', 68, 72, 13);
         game.load.spritesheet('player-beam-out', '/assets/img/man_tele_rück.png', 68, 72, 13);
-        game.load.spritesheet('player-fall', '/assets/img/man_fall.png', 44, 100, 2);
+        game.load.spritesheet('player-fall', '/assets/img/man_fall.png', 68, 100, 2);
+        game.load.spritesheet('charging1', '/assets/img/circle.png', 90, 90, 31);
+        game.load.spritesheet('arrowman', 'assets/img/man_arrowman.png', 36, 60, 2);
 
         game.load.physics('physicsData', 'assets/physics/sprites.json');
     },
@@ -174,6 +194,13 @@ var Start = {
         this.startplatform.body.setCollisionGroup(startPlatformCollisionGroup);
         this.startplatform.body.collides(this.playerCollisionGroup);
         this.spawnsecondcloud(platform);
+        this.arrowsprite = null;
+           
+        // Points
+        points = 0.0;
+        this.pointtext = game.add.bitmapText(0, -20, 'desyrel', points+'', 64);
+        this.pointtext.anchor.x = 0;
+        this.pointtext.anchor.y = 0;
 
         // Zielen
         this.inputMode = 'idle'; // angel, radius
@@ -249,6 +276,23 @@ var Start = {
                 
             } 
         }
+        if(this.player.sprite.body.y<0 && this.arrowsprite == null){
+            this.arrowsprite = game.add.sprite(this.arrowspawnx, this.arrowspawny, 'arrowman');
+            this.arrowsprite.visible = false;
+            this.arrowspawnx = this.player.sprite.body.x;
+            this.arrowspawny = 0;
+            this.arrowsprite.x = this.arrowspawnx;
+            this.arrowsprite.y = this.arrowspawny;
+            this.arrowsprite.animations.add('arrowman');
+            this.arrowsprite.animations.play('arrowman', 12, true);
+            this.arrowsprite.visible = true;
+        }
+
+        if(this.player.sprite.body.y>0 && this.arrowsprite != null){
+            this.arrowsprite.destroy();
+            this.arrowsprite = null;
+        }
+        this.pointtext.text = points + '';
     },
     spawnsecondcloud : function (platform) {
         this.cloudspawnx = game.rnd.integerInRange(this.player.sprite.body.x, this.game.width);
