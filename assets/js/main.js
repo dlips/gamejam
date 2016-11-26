@@ -1,4 +1,4 @@
-var fullchargtime = 10;
+var fullchargtime = 2;
 var ctime = 0.0;
 
 var Player = {
@@ -119,6 +119,7 @@ var Start = {
         game.load.spritesheet('player-beam-in', '/assets/img/man_tele_hin.png', 68, 72, 13);
         game.load.spritesheet('player-beam-out', '/assets/img/man_tele_rück.png', 68, 72, 13);
         game.load.spritesheet('player-fall', '/assets/img/man_fall.png', 68, 100, 2);
+        game.load.spritesheet('arrowman', 'assets/img/man_arrowman.png', 36, 60, 2);
 
         game.load.physics('physicsData', 'assets/physics/sprites.json');
     },
@@ -173,6 +174,7 @@ var Start = {
         startplatform.body.collides(this.playerCollisionGroup);
 
         this.spawnsecondcloud(platform);
+        this.arrowsprite = null;
         
 
        
@@ -227,6 +229,22 @@ var Start = {
                 game.state.restart();
             }, this);
         }
+        if(this.player.sprite.body.y<0 && this.arrowsprite == null){
+            this.arrowsprite = game.add.sprite(this.arrowspawnx, this.arrowspawny, 'arrowman');
+            this.arrowsprite.visible = false;
+            this.arrowspawnx = this.player.sprite.body.x;
+            this.arrowspawny = 0;
+            this.arrowsprite.x = this.arrowspawnx;
+            this.arrowsprite.y = this.arrowspawny;
+            this.arrowsprite.animations.add('arrowman');
+            this.arrowsprite.animations.play('arrowman', 12, true);
+            this.arrowsprite.visible = true;
+        }
+
+        if(this.player.sprite.body.y>0 && this.arrowsprite != null){
+            this.arrowsprite.destroy();
+            this.arrowsprite = null;
+        }
     },
     spawnsecondcloud : function (platform) {
         this.cloudspawnx = game.rnd.integerInRange(this.player.sprite.body.x, this.game.width);
@@ -238,7 +256,7 @@ var Start = {
         secondplatform.body.collides(this.playerCollisionGroup);
 
 
-    }
+    },
 };
 
 var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', Start);
