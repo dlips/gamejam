@@ -1,3 +1,5 @@
+var fullchargtime = 3;
+
 var Player = {
     init : function (x, y) {
         this.sprite = game.add.sprite(x, y, 'player-idle');
@@ -9,7 +11,8 @@ var Player = {
         this.sprite.body.collideWorldBounds = true;
 	    this.sprite.body.fixedRotation = true;
 	    this.sprite.body.setZeroDamping();
-        this.state = 'standing';
+        this.state = 'falling';
+        this.fallingAnimation();
     },
     teleport : function (x, y) {
         this.state = 'beaming';
@@ -24,7 +27,8 @@ var Player = {
             animationIn.onComplete.add(function () {
                 this.sprite.loadTexture('player-idle');
                 this.sprite.animations.play('player-idle', 24, true);
-                this.state = 'standing';
+                this.state = 'falling';
+                this.fallingAnimation();
             }, this);
         }, this);
     },
@@ -32,25 +36,32 @@ var Player = {
         this.sprite.body.reset(x, y);
         this.sprite.body.setZeroVelocity();
     },
-    setState : function(currentState) {
-        if (currentState != this.state) {
-            if (this.state == 'standing' && currentState == 'falling') {
-                this.sprite.loadTexture('player-fall', 0);
-                this.sprite.animations.add('player-fall');
-                this.sprite.animations.play('player-fall', 15, true);
-            }
-            if (this.state == 'falling' && currentState == 'standing') {
-                this.sprite.loadTexture('player-idle', 0);
-                this.sprite.animations.play('player-idle', 24, true);
-            }
-            this.state = currentState;
-        }
+    fallingAnimation : function() {
+        this.sprite.loadTexture('player-fall', 0);
+        this.sprite.animations.add('player-fall');
+        this.sprite.animations.play('player-fall', 15, true);
+    },
+    chargingAnimation : function () {
+        this.sprite.loadTexture('player-idle', 0);
+        this.sprite.animations.add('player-idle');
+        this.sprite.animations.play('player-idle', 24, true);
     },
     isFalling : function () {
-        return this.sprite.body.velocity.y > 0.0;
+        return this.sprite.body.velocity.y > 0.1;
     },
-    landedOnPlatform : function() {
-        console.log("gelandet!");
+    landedOnStartPlatform : function() {
+        if(this.state == 'falling') {
+            this.state = 'standing';
+            this.chargingAnimation();
+            this.sprite.body.setZeroVelocity();
+        }
+    },
+    landedOnSecondPlatform : function() {
+        if(this.state == 'falling') {
+            this.state = 'standing';
+            this.chargingAnimation();
+            this.sprite.body.setZeroVelocity();
+        }
     }
 };
 
@@ -81,7 +92,8 @@ var Start = {
         game.physics.p2.restitution = 0;
         game.physics.p2.gravity.y = 300;
         var playerCollisionGroup = game.physics.p2.createCollisionGroup();
-        var platformCollisionGroup = game.physics.p2.createCollisionGroup();
+        var startPlatformCollisionGroup = game.physics.p2.createCollisionGroup();
+        var secondPlatformCollisionGroup = game.physics.p2.createCollisionGroup();
         
         // Background
         var background = game.add.sprite(0, 0, 'background');
@@ -107,9 +119,10 @@ var Start = {
 
         // Player definieren
         this.player = Player;
-        this.player.init(10, 400);
+        this.player.init(50, 400);
         this.player.sprite.body.setCollisionGroup(playerCollisionGroup);
-        this.player.sprite.body.collides(platformCollisionGroup);
+        this.player.sprite.body.collides(startPlatformCollisionGroup, this.player.landedOnStartPlatform, this.player);
+        this.player.sprite.body.collides(secondPlatformCollisionGroup, this.player.landedOnSecondPlatform, this.player);
 
         // Plattformen erstellen
         var platform = game.add.group();
@@ -118,12 +131,12 @@ var Start = {
         var startplatform = platform.create(75,560,'cloud');
         startplatform.body.setRectangle(135,31);
         startplatform.body.static = true;
-        startplatform.body.setCollisionGroup(platformCollisionGroup);
-        startplatform.body.collides(playerCollisionGroup, this.player.landedOnPlatform, this);
+        startplatform.body.setCollisionGroup(startPlatformCollisionGroup);
+        startplatform.body.collides(playerCollisionGroup);
         var secondplatform = platform.create(400,300,'cloud');
         secondplatform.body.setRectangle(135,31);
         secondplatform.body.static = true;
-        secondplatform.body.setCollisionGroup(platformCollisionGroup);
+        secondplatform.body.setCollisionGroup(secondPlatformCollisionGroup);
         secondplatform.body.collides(playerCollisionGroup);
 
        
@@ -135,7 +148,9 @@ var Start = {
         background.events.onInputDown.add(function() {
             var x = game.input.x;
             var y = game.input.y;
-            this.player.teleport(x, y);
+            if (this.player.state == 'standing') {
+                this.player.teleport(x, y);
+            }
             
             // if (this.inputMode == 'idle') {
             //     this.inputMode = 'angel';
@@ -175,12 +190,6 @@ var Start = {
         this.moonBack.tilePosition.x -= 0.05;
         this.mountainsFore.tilePosition.x -= 0.3;
         this.mountainsBack.tilePosition.x -= 0.1;
-        
-        if (this.player.isFalling()) {
-            this.player.setState('falling');
-        } else {
-            this.player.setState('standing');
-        }
     }
     
 };
