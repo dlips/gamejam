@@ -134,11 +134,8 @@ var Start = {
         game.load.spritesheet('player-beam-in', '/assets/img/man_tele_hin.png', 68, 72, 13);
         game.load.spritesheet('player-beam-out', '/assets/img/man_tele_rück.png', 68, 72, 13);
         game.load.spritesheet('player-fall', '/assets/img/man_fall.png', 68, 100, 2);
-<<<<<<< HEAD
         game.load.spritesheet('charging1', '/assets/img/circle.png', 90, 90, 31);
-=======
         game.load.spritesheet('arrowman', 'assets/img/man_arrowman.png', 36, 60, 2);
->>>>>>> 9903e3695885647264e72a36cc53bf8635169591
 
         game.load.physics('physicsData', 'assets/physics/sprites.json');
     },
