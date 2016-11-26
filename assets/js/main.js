@@ -117,10 +117,10 @@ var Start = {
         game.load.image('mountains2', 'assets/img/mountain2.png');
         game.load.image('cloud', 'assets/img/simplecloud.png');
         game.load.spritesheet('crosshair', '/assets/img/circle.png', 50, 50, 6);
-        game.load.spritesheet('player-idle', '/assets/img/man_stand.png', 68, 72, 5);
+        game.load.spritesheet('player-idle', '/assets/img/man_stand.png', 68, 100, 5);
         game.load.spritesheet('player-beam-in', '/assets/img/man_tele_hin.png', 68, 72, 13);
         game.load.spritesheet('player-beam-out', '/assets/img/man_tele_rück.png', 68, 72, 13);
-        game.load.spritesheet('player-fall', '/assets/img/man_fall.png', 44, 100, 2);
+        game.load.spritesheet('player-fall', '/assets/img/man_fall.png', 68, 100, 2);
 
         game.load.physics('physicsData', 'assets/physics/sprites.json');
     },
