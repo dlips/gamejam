@@ -3,8 +3,6 @@ var myState = {
         game.load.image('background', 'assets/img/background.png');
         game.load.image('man', 'assets/img/man.png');
         game.load.image('platform', 'assets/img/simpleplatform.png');
-        game.load.spritesheet('testanimation', 'assets/img/testanimation.png', 32, 32, 10);
-        game.load.spritesheet('crosshair', 'assets/img/circle.png', 50, 50, 6);
     },
     create : function () {
         game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -15,24 +13,24 @@ var myState = {
         this.people = game.add.group();
         this.people.enableBody = true;
         var man = this.people.create(10,10,'man');
-       // man.scale.setTo(3,3);
+        game.physics.arcade.enable(man);
+        man.body.bounce.y = 0.2;
+        man.body.gravity.y = 300;
+        man.body.collideWorldBounds = true;
 
         //plattformen erstellen
         platform = game.add.group();
         platform.enableBody = true;
-        var startplatform = platform.create(10,100,'platform');
+
+        var startplatform = platform.create(10,500,'platform');
         startplatform.body.immovable = true;
 
-        //var testanimation = game.add.sprite(150, 150, 'testanimation');
-        //testanimation.animations.add('walk');
-        //testanimation.animations.play('walk', 2, true);
-    
-        var testanimation2 = game.add.sprite(150, 150, 'crosshair');
-        testanimation2.animations.add('move');
-        testanimation2.animations.play('move', 2, true);
+        var secondplatform = platform.create(400,300,'platform');
+        secondplatform.body.immovable = true;
+
     },
     update : function () {
-
+        var hitPlatform = game.physics.arcade.collide(man, platform);
     },
     teleport : function() {
         var x = game.input.x;
@@ -41,6 +39,10 @@ var myState = {
         this.people = game.add.group();
         this.people.enableBody = true;
         var man = this.people.create(x, y, 'man');
+        game.physics.arcade.enable(man);
+        man.body.bounce.y = 0.2;
+        man.body.gravity.y = 300;
+        man.body.collideWorldBounds = true;
     }
 };
 var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', myState);
