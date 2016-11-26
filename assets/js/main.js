@@ -1,4 +1,5 @@
-var fullchargtime = 3;
+var fullchargtime = 10;
+var ctime = 0.0;
 
 var Player = {
     init : function (x, y) {
@@ -15,6 +16,8 @@ var Player = {
         this.fallingAnimation();
     },
     teleport : function (x, y) {
+        this.angleCounter.destroy();
+        game.time.events.remove(this.powerTimer);
         this.state = 'beaming';
         this.sprite.loadTexture('player-beam-in', 0);
         var animationOut = this.sprite.animations.add('beam');
@@ -45,6 +48,33 @@ var Player = {
         this.sprite.loadTexture('player-idle', 0);
         this.sprite.animations.add('player-idle');
         this.sprite.animations.play('player-idle', 24, true);
+        ctime = game.time.totalElapsedSeconds();
+        
+        this.angleCounter = game.add.text(game.world.centerX, game.world.centerY, this.aimAngle, { 
+            font: "64px Arial", 
+            fill: "#ffffff", 
+            align: "center" 
+        });
+        this.angleTimer = game.time.events.loop(Phaser.Timer.SECOND / 10, function() {
+            var t = game.time.totalElapsedSeconds();
+            var angle = (90 * (t-ctime)/fullchargtime) % 180;
+            if (angle > 90) {
+                angle = 180 - angle;
+            }
+            this.angleCounter.setText(angle);
+        }, this);
+    },
+    chargingAnimation2 : function () {
+        ctime = game.time.totalElapsedSeconds();
+        game.time.events.remove(this.angleTimer);
+        this.powerTimer = game.time.events.loop(Phaser.Timer.SECOND / 5, function() {
+            var t = game.time.totalElapsedSeconds();
+            var power = (1000 * (t-ctime)/fullchargtime) % 2000;
+            if (power > 1000) {
+                power = 2000 - power;
+            }
+            this.angleCounter.setText(power);
+        }, this);
     },
     isFalling : function () {
         return this.sprite.body.velocity.y > 0.1;
@@ -90,7 +120,7 @@ var Start = {
         game.physics.startSystem(Phaser.Physics.P2JS);
         game.physics.p2.setImpactEvents(true);
         game.physics.p2.restitution = 0;
-        game.physics.p2.gravity.y = 300;
+        game.physics.p2.gravity.y = 600;
         var playerCollisionGroup = game.physics.p2.createCollisionGroup();
         var startPlatformCollisionGroup = game.physics.p2.createCollisionGroup();
         var secondPlatformCollisionGroup = game.physics.p2.createCollisionGroup();
@@ -149,47 +179,40 @@ var Start = {
             var x = game.input.x;
             var y = game.input.y;
             if (this.player.state == 'standing') {
-                this.player.teleport(x, y);
+                var t = game.time.totalElapsedSeconds();
+                this.angle = (90 * (t-ctime)/fullchargtime) % 180;
+                if (this.angle > 90) {
+                    this.angle = 180 - this.angle;
+                }
+                this.player.chargingAnimation2();
             }
-            
-            // if (this.inputMode == 'idle') {
-            //     this.inputMode = 'angel';
-            //     this.crosshair = game.add.sprite(this.player.x+60, this.player.y-20, 'crosshair');
-            //     this.crosshair.scale.setTo(2, 2);
-            //     var animation = this.crosshair.animations.add('aim');
-            //     this.crosshair.animations.play('aim', 2, true);
-            //     console.log("hello");
-            // } else if (this.inputMode == 'angel') {
-            //     this.inputMode = 'idle';
-            //     this.crosshair.destroy();
-            // }
-            
-        }, this);
-        this.aimAnglePeriod = game.math.PI2 / this.aimAngularVelocity;
-        this.aimAngle = 0;
-        this.angleCounter = game.add.text(game.world.centerX, game.world.centerY, this.aimAngle, { 
-            font: "64px Arial", 
-            fill: "#ffffff", 
-            align: "center" 
-        });
-        this.aimAngleDirection = 1;
-        game.time.events.loop(this.aimAnglePeriod * Phaser.Timer.SECOND, function() {
-            this.aimAngle += this.aimAngleDirection * this.aimAngularVelocity * this.aimAnglePeriod;
-            if (this.aimAngle > 90) {
-                this.aimAngleDirection = -1;
-                this.aimAngle = 90;
-            } else if (this.aimAngle < 0) {
-                this.aimAngleDirection = 1;
-                this.aimAngle = 0;
-            }
-            this.angleCounter.setText(this.aimAngle);
         }, this);
         
+        background.events.onInputUp.add(function() {
+            var x = game.input.x;
+            var y = game.input.y;
+            if (this.player.state == 'standing') {
+                var t = game.time.totalElapsedSeconds();
+                this.power = (1000 * (t-ctime)/fullchargtime) % 2000;
+                if (this.power > 1000) {
+                    this.power = 2000 - this.power;
+                }
+                var x = this.player.sprite.body.x + this.power * Math.cos(this.angle*2*Math.PI/360);
+                var y = this.player.sprite.body.y - this.power * Math.sin(this.angle*2*Math.PI/360);
+                this.player.teleport(x, y);
+                console.log("Power: " + this.power);
+                console.log("Angle: " + this.angle);
+                console.log("x: " + x);
+                console.log("y: " + y);
+            }
+        }, this);
     },
     update : function () {
         this.moonBack.tilePosition.x -= 0.05;
         this.mountainsFore.tilePosition.x -= 0.3;
         this.mountainsBack.tilePosition.x -= 0.1;
+
+        
     }
     
 };
