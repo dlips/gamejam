@@ -76,6 +76,26 @@ var myState = {
         var secondplatform = platform.create(400,300,'platform');
         secondplatform.body.immovable = true;
         this.jumped = false;
+
+        this.aimAnglePeriod = game.math.PI2 / this.aimAngularVelocity;
+        this.aimAngle = 0;
+        this.angleCounter = game.add.text(game.world.centerX, game.world.centerY, this.aimAngle, { 
+            font: "64px Arial", 
+            fill: "#ffffff", 
+            align: "center" 
+        });
+        this.aimAngleDirection = 1;
+        game.time.events.loop(this.aimAnglePeriod * Phaser.Timer.SECOND, function() {
+            this.aimAngle += this.aimAngleDirection * this.aimAngularVelocity * this.aimAnglePeriod;
+            if (this.aimAngle > 90) {
+                this.aimAngleDirection = -1;
+                this.aimAngle = 90;
+            } else if (this.aimAngle < 0) {
+                this.aimAngleDirection = 1;
+                this.aimAngle = 0;
+            }
+            this.angleCounter.setText(this.aimAngle);
+        }, this);
     },
     update : function () {
         var hitPlatform = game.physics.arcade.collide(this.player, platform);
