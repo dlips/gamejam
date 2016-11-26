@@ -41,6 +41,7 @@ var myState = {
                 this.player.animations.play('beam2', 50, false);
                 animationIn.onComplete.add(function () {
                     this.player.loadTexture('player-idle');
+                    this.player.animations.play('player-idle');
                 }, this);
             }, this);
             
