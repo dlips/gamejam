@@ -100,6 +100,8 @@ var Start = {
     aimAngularVelocity : (90 / 3),
     aimRangeSpeed : (200 / 3),
     preload :  function () {
+
+        game.load.bitmapFont('desyrel', 'assets/fonts/desyrel.png', 'assets/fonts/desyrel.xml');
         game.load.image('background', 'assets/img/background.png');
         game.load.image('man', 'assets/img/man.png');
         game.load.image('platform', 'assets/img/simpleplatform.png');
@@ -210,8 +212,16 @@ var Start = {
         this.moonBack.tilePosition.x -= 0.05;
         this.mountainsFore.tilePosition.x -= 0.3;
         this.mountainsBack.tilePosition.x -= 0.1;
-
-        
+        if(this.player.state == 'falling' && (this.player.sprite.body.y > this.game.height)){
+            this.player.state = 'dead';
+            var text = game.add.bitmapText(400, 300, 'desyrel', 'Scrub Try Again', 64);
+            text.anchor.x = 0.5;
+            text.anchor.y = 0.5;
+            text.inputEnabled = true;
+            text.events.onInputDown.add(function() {
+                game.state.restart();
+            }, this);
+        }
     },
     spawnsecondcloud : function (platform) {
         this.cloudspawnx = game.rnd.integerInRange(this.player.sprite.body.x, this.game.width);
@@ -224,6 +234,6 @@ var Start = {
 
 
     }
-    
 };
+
 var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', Start);
