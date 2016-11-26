@@ -6,6 +6,7 @@ var Player = {
         this.sprite = game.add.sprite(x, y, 'player-idle');
         this.sprite.enableBody = true;
         game.physics.p2.enable(this.sprite, true);
+        this.sprite.body.motionState = Phaser.Physics.P2.Body.DYNAMIC;
         this.sprite.body.setRectangle(20,68);
         this.sprite.animations.add('player-idle');
         this.sprite.animations.play('player-idle', 24, true);
@@ -40,11 +41,15 @@ var Player = {
         this.sprite.body.setZeroVelocity();
     },
     fallingAnimation : function() {
+        this.sprite.body.motionState = Phaser.Physics.P2.Body.DYNAMIC;
+        
         this.sprite.loadTexture('player-fall', 0);
         this.sprite.animations.add('player-fall');
         this.sprite.animations.play('player-fall', 15, true);
     },
     chargingAnimation : function () {
+        this.sprite.body.motionState = Phaser.Physics.P2.Body.STATIC;
+        
         this.sprite.loadTexture('player-idle', 0);
         this.sprite.animations.add('player-idle');
         this.sprite.animations.play('player-idle', 24, true);
@@ -212,7 +217,6 @@ var Start = {
         this.mountainsFore.tilePosition.x -= 0.3;
         this.mountainsBack.tilePosition.x -= 0.1;
 
-        
     }
     
 };
