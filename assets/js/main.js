@@ -1,3 +1,57 @@
+var Player = {
+    init : function (x, y) {
+        this.sprite = game.add.sprite(x, y, 'player-idle');
+        game.physics.arcade.enable(this.sprite);
+        this.sprite.enableBody = true;
+        this.sprite.animations.add('player-idle');
+        this.sprite.animations.play('player-idle', 24, true);
+        this.sprite.body.bounce.y = 0.0;
+        this.sprite.body.gravity.y = 300;
+        this.sprite.body.collideWorldBounds = true;
+        this.state = 'standing';
+    },
+    teleport : function (x, y) {
+        this.state = 'beaming';
+        this.sprite.loadTexture('player-beam-in', 0);
+        var animationOut = this.sprite.animations.add('beam');
+        this.sprite.animations.play('beam', 50, false);
+        animationOut.onComplete.add(function () {
+            this.move(x, y);
+            this.sprite.loadTexture('player-beam-out');
+            var animationIn = this.sprite.animations.add('beam2');
+            this.sprite.animations.play('beam2', 50, false);
+            animationIn.onComplete.add(function () {
+                this.sprite.loadTexture('player-idle');
+                this.sprite.animations.play('player-idle', 24, true);
+                this.state = 'standing';
+            }, this);
+        }, this);
+    },
+    move : function(x, y) {
+        this.sprite.x = x;
+        this.sprite.y = y;
+        this.sprite.body.velocity.x = 0;
+        this.sprite.body.velocity.y = 0;
+    },
+    setState : function(currentState) {
+        if (currentState != this.state) {
+            if (this.state == 'standing' && currentState == 'falling') {
+                this.sprite.loadTexture('player-fall', 0);
+                this.sprite.animations.add('player-fall');
+                this.sprite.animations.play('player-fall', 15, true);
+            }
+            if (this.state == 'falling' && currentState == 'standing') {
+                this.sprite.loadTexture('player-idle', 0);
+                this.sprite.animations.play('player-idle', 24, true);
+            }
+            this.state = currentState;
+        }
+    },
+    isFalling : function () {
+        return this.sprite.body.velocity.y > 0.0;
+    }
+};
+
 var myState = {
     aimAngularVelocity : (90 / 3),
     aimRangeSpeed : (200 / 3),
@@ -34,33 +88,16 @@ var myState = {
         );
 
         // Player definieren
-        this.player = game.add.sprite(10, 400, 'player-idle');
-        this.player.enableBody = true;
-        this.player.animations.add('player-idle');
-        this.player.animations.play('player-idle', 24, true);
-        game.physics.arcade.enable(this.player);
-        this.player.body.bounce.y = 0.0;
-        this.player.body.gravity.y = 300;
-        this.player.body.collideWorldBounds = true;
+        this.player = Player;
+        this.player.init(10, 400);
+
         this.inputMode = 'idle'; // angel, radius
         this.crosshair = game.make.sprite('crosshair');
         game.world.add(this.crosshair);
         background.events.onInputDown.add(function() {
             var x = game.input.x;
             var y = game.input.y;
-            this.player.loadTexture('player-beam-in', 0);
-            var animationOut = this.player.animations.add('beam');
-            this.player.animations.play('beam', 50, false);
-            animationOut.onComplete.add(function () {
-                this.teleport(x, y);
-                this.player.loadTexture('player-beam-out');
-                var animationIn = this.player.animations.add('beam2');
-                this.player.animations.play('beam2', 50, false);
-                animationIn.onComplete.add(function () {
-                    this.player.loadTexture('player-idle');
-                    this.player.animations.play('player-idle', 24, true);
-                }, this);
-            }, this);
+            this.player.teleport(x, y);
             
             // if (this.inputMode == 'idle') {
             //     this.inputMode = 'angel';
@@ -84,7 +121,6 @@ var myState = {
 
         var secondplatform = platform.create(400,300,'platform');
         secondplatform.body.immovable = true;
-        this.jumped = false;
 
         this.aimAnglePeriod = game.math.PI2 / this.aimAngularVelocity;
         this.aimAngle = 0;
@@ -111,21 +147,12 @@ var myState = {
         this.moonBack.tilePosition.x -= 0.05;
         this.mountainsBack.tilePosition.x -= 0.3;
         
-        if (!this.jumped && this.player.body.velocity.y > 0.0) {
-            this.player.loadTexture('player-fall', 0);
-            this.player.animations.add('fall', 2, true);
-            this.jumped = true;
-        } else if (this.jumped && this.player.body.velocity.y <= 0.1) {
-            this.player.loadTexture('player-idle', 0);
-            this.player.animations.play('player-idle', 24, true);
-            this.jumped = false;
+        if (this.player.isFalling()) {
+            this.player.setState('falling');
+        } else {
+            this.player.setState('standing');
         }
-    },
-    teleport : function(x, y) {
-        this.player.x = x;
-        this.player.y = y;
-        this.player.body.velocity.x = 0;
-        this.player.body.velocity.y = 0;
     }
+    
 };
 var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', myState);
