@@ -61,7 +61,8 @@ var Start = {
         game.load.image('man', 'assets/img/man.png');
         game.load.image('platform', 'assets/img/simpleplatform.png');
         game.load.image('moon', 'assets/img/moon.png');
-        game.load.image('mountains', 'assets/img/mountain1.png');
+        game.load.image('mountains1', 'assets/img/mountain1.png');
+        game.load.image('mountains2', 'assets/img/mountain2.png');
         game.load.spritesheet('crosshair', '/assets/img/circle.png', 50, 50, 6);
         game.load.spritesheet('player-idle', '/assets/img/man_stand.png', 68, 72, 5);
         game.load.spritesheet('player-beam-in', '/assets/img/man_tele_hin.png', 68, 72, 13);
@@ -89,12 +90,18 @@ var Start = {
             this.game.width, 
             this.game.cache.getImage('moon').height, 
             'moon'
-        );       
+        );
         this.mountainsBack = this.game.add.tileSprite(0, 
-            this.game.height - this.game.cache.getImage('mountains').height-75, 
+            this.game.height - this.game.cache.getImage('mountains2').height-50, 
             this.game.width, 
-            this.game.cache.getImage('mountains').height, 
-            'mountains'
+            this.game.cache.getImage('mountains2').height, 
+            'mountains2'
+        );
+        this.mountainsFore = this.game.add.tileSprite(0, 
+            this.game.height - this.game.cache.getImage('mountains1').height, 
+            this.game.width, 
+            this.game.cache.getImage('mountains1').height, 
+            'mountains1'
         );
 
         // Player definieren
@@ -165,7 +172,8 @@ var Start = {
     },
     update : function () {
         this.moonBack.tilePosition.x -= 0.05;
-        this.mountainsBack.tilePosition.x -= 0.3;
+        this.mountainsFore.tilePosition.x -= 0.3;
+        this.mountainsBack.tilePosition.x -= 0.1;
         
         if (this.player.isFalling()) {
             this.player.setState('falling');
