@@ -134,7 +134,11 @@ var Start = {
         game.load.spritesheet('player-beam-in', '/assets/img/man_tele_hin.png', 68, 72, 13);
         game.load.spritesheet('player-beam-out', '/assets/img/man_tele_rück.png', 68, 72, 13);
         game.load.spritesheet('player-fall', '/assets/img/man_fall.png', 68, 100, 2);
+<<<<<<< HEAD
         game.load.spritesheet('charging1', '/assets/img/circle.png', 90, 90, 31);
+=======
+        game.load.spritesheet('arrowman', 'assets/img/man_arrowman.png', 36, 60, 2);
+>>>>>>> 9903e3695885647264e72a36cc53bf8635169591
 
         game.load.physics('physicsData', 'assets/physics/sprites.json');
     },
@@ -189,12 +193,17 @@ var Start = {
         startplatform.body.collides(this.playerCollisionGroup);
 
         this.spawnsecondcloud(platform);
+<<<<<<< HEAD
+        this.arrowsprite = null;
+        
+=======
            
         // Points
         points = 0.0;
         this.pointtext = game.add.bitmapText(0, -20, 'desyrel', points+'', 64);
         this.pointtext.anchor.x = 0;
         this.pointtext.anchor.y = 0;
+>>>>>>> e9bf306d1c1f09fb44704bb0f39d9e3faf210432
 
         // Zielen
         this.inputMode = 'idle'; // angel, radius
@@ -246,7 +255,23 @@ var Start = {
                 game.state.restart();
             }, this);
         }
-        this.pointtext.text = points + '';        
+        if(this.player.sprite.body.y<0 && this.arrowsprite == null){
+            this.arrowsprite = game.add.sprite(this.arrowspawnx, this.arrowspawny, 'arrowman');
+            this.arrowsprite.visible = false;
+            this.arrowspawnx = this.player.sprite.body.x;
+            this.arrowspawny = 0;
+            this.arrowsprite.x = this.arrowspawnx;
+            this.arrowsprite.y = this.arrowspawny;
+            this.arrowsprite.animations.add('arrowman');
+            this.arrowsprite.animations.play('arrowman', 12, true);
+            this.arrowsprite.visible = true;
+        }
+
+        if(this.player.sprite.body.y>0 && this.arrowsprite != null){
+            this.arrowsprite.destroy();
+            this.arrowsprite = null;
+        }
+        this.pointtext.text = points + '';
     },
     spawnsecondcloud : function (platform) {
         this.cloudspawnx = game.rnd.integerInRange(this.player.sprite.body.x, this.game.width);
@@ -258,7 +283,7 @@ var Start = {
         secondplatform.body.collides(this.playerCollisionGroup);
 
 
-    }
+    },
 };
 
 var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', Start);
