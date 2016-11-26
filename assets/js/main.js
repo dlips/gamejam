@@ -11,11 +11,11 @@ var myState = {
         game.load.spritesheet('player-idle', '/assets/img/man_stand.png', 68, 72, 5);
         game.load.spritesheet('player-beam-in', '/assets/img/man_tele_hin.png', 68, 72, 13);
         game.load.spritesheet('player-beam-out', '/assets/img/man_tele_rück.png', 68, 72, 13);
+        game.load.spritesheet('player-fall', '/assets/img/man_fall.png', 44, 100, 2);
     },
     create : function () {
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
-        // Background
         var background = game.add.sprite(0, 0, 'background');
         background.inputEnabled = true;     
 
@@ -39,7 +39,7 @@ var myState = {
         this.player.animations.add('player-idle');
         this.player.animations.play('player-idle', 24, true);
         game.physics.arcade.enable(this.player);
-        this.player.body.bounce.y = 0.2;
+        this.player.body.bounce.y = 0.0;
         this.player.body.gravity.y = 300;
         this.player.body.collideWorldBounds = true;
         this.inputMode = 'idle'; // angel, radius
@@ -58,6 +58,7 @@ var myState = {
                 this.player.animations.play('beam2', 50, false);
                 animationIn.onComplete.add(function () {
                     this.player.loadTexture('player-idle');
+                    this.player.animations.play('player-idle', 24, true);
                 }, this);
             }, this);
             
@@ -83,12 +84,22 @@ var myState = {
 
         var secondplatform = platform.create(400,300,'platform');
         secondplatform.body.immovable = true;
-
+        this.jumped = false;
     },
     update : function () {
         var hitPlatform = game.physics.arcade.collide(this.player, platform);
         this.moonBack.tilePosition.x -= 0.05;
         this.mountainsBack.tilePosition.x -= 0.3;
+        
+        if (!this.jumped && this.player.body.velocity.y > 0.0) {
+            this.player.loadTexture('player-fall', 0);
+            this.player.animations.add('fall', 2, true);
+            this.jumped = true;
+        } else if (this.jumped && this.player.body.velocity.y <= 0.1) {
+            this.player.loadTexture('player-idle', 0);
+            this.player.animations.play('player-idle', 24, true);
+            this.jumped = false;
+        }
     },
     teleport : function(x, y) {
         this.player.x = x;
