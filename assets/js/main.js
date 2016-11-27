@@ -398,8 +398,8 @@ var Load = {
         game.load.image('mountains1', 'assets/img/mountain1.png');
         game.load.image('mountains2', 'assets/img/mountain2.png');
         game.load.spritesheet('player-idle', '/assets/img/alienstanding.png', 192, 477, 20);
-        game.load.spritesheet('player-beam-in', '/assets/img/alienbeam.png', 610, 748, 20);
-        game.load.spritesheet('player-beam-out', '/assets/img/man_tele_rück.png', 68, 72, 13);
+        game.load.spritesheet('player-beam-in', '/assets/img/alienbeam.png', 751, 609, 36);
+        game.load.spritesheet('player-beam-out', '/assets/img/man_tele_rück.png', 731, 559, 36);
         game.load.spritesheet('player-fall', '/assets/img/man_fall.png', 68, 100, 2);
         game.load.spritesheet('arrowman', 'assets/img/man_arrowman.png', 36, 60, 2);
         game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
