@@ -7,6 +7,7 @@ var movetime = 1000;
 var chargeanimationFPS = 40;
 var menutimeportal = 3;
 var introportal = false;
+var teleportoffset = 100;
 
 var showCollisionBoxes = false;
 
@@ -53,12 +54,11 @@ var Player = {
         game.time.events.remove(this.powerTimer);
         this.state = 'beaming';
         this.sprite.loadTexture('player-beam-in', 0);
-        this.sprite.anchor.x = 0.5;
         var animationOut = this.sprite.animations.add('beam');
         this.sprite.scale.setTo(0.25, 0.25);
         this.sprite.animations.play('beam', 20, false);
         animationOut.onComplete.add(function () {
-            this.move(x, y);
+            this.move(x, y+teleportoffset);
             this.sprite.loadTexture('player-beam-out');
             var animationIn = this.sprite.animations.add('beam2');
             this.sprite.animations.play('beam2', 50, false);
