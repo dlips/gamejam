@@ -228,6 +228,16 @@ var Play = {
 
         this.rectDelete();
 
+        var backtoMenu = game.add.graphics(0,0);
+        backtoMenu.beginFill(0x40FF7E,0.75);
+        backtoMenu.drawCircle(750,550,50);
+        backtoMenu.inputEnabled = true;
+        backtoMenu.events.onInputDown.add(function() {
+            game.state.remove();
+            game.state.start('Menu');
+        }, this);
+        var backtoMenuText = game.add.bitmapText(730, 540, 'desyrel', 'Menu', 16);
+
         // Zielen
         this.inputMode = 'idle'; // angel, radius
         this.crosshair = game.make.sprite('crosshair');
