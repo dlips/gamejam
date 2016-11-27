@@ -132,32 +132,11 @@ var Player = {
 };
 
 
-var Start = {
+var Play = {
     aimAngularVelocity : (90 / 3),
     aimRangeSpeed : (200 / 3),
-    preload :  function () {
-
-        game.load.bitmapFont('desyrel', 'assets/fonts/desyrel.png', 'assets/fonts/desyrel.xml');
-        game.load.image('background', 'assets/img/background.png');
-        game.load.image('man', 'assets/img/man.png');
-        game.load.image('moon', 'assets/img/moon.png');
-        game.load.image('mountains1', 'assets/img/mountain1.png');
-        game.load.image('mountains2', 'assets/img/mountain2.png');
-        game.load.image('cloud', 'assets/img/simplecloud.png');
-        game.load.image('platform', 'assets/img/platform.png');
-        game.load.spritesheet('crosshair', '/assets/img/circle.png', 50, 50, 6);
-        game.load.spritesheet('player-idle', '/assets/img/man_stand.png', 68, 100, 5);
-        game.load.spritesheet('player-beam-in', '/assets/img/man_tele_hin.png', 68, 72, 13);
-        game.load.spritesheet('player-beam-out', '/assets/img/man_tele_rück.png', 68, 72, 13);
-        game.load.spritesheet('player-fall', '/assets/img/man_fall.png', 68, 100, 2);
-        game.load.spritesheet('charging1', '/assets/img/circle.png', 90, 90, 31);
-        game.load.spritesheet('arrowman', 'assets/img/man_arrowman.png', 36, 60, 2);
-
-        game.load.physics('physicsData', 'assets/physics/sprites.json');
-    },
     create : function () {
         //Physics & Collision
-        game.physics.startSystem(Phaser.Physics.P2JS);
         game.physics.p2.setImpactEvents(true);
         game.physics.p2.restitution = 0;
         game.physics.p2.gravity.y = 600;
@@ -301,9 +280,7 @@ var Start = {
     swapClouds : function () {
         this.startplatform.destroy();
         this.startplatform = this.secondplatform;
-        this.startplatform.body.removeCollisionGroup(this.secondPlatformCollisionGroup);
-        this.startplatform.body.setCollisionGroup(this.startPlatformCollisionGroup);
-        this.startplatform.body.collides(this.playerCollisionGroup);
+        this.startPlatformCollisionGroup = this.startPlatformCollisionGroup;
         this.spawnsecondcloud();
     },
     spawnsecondcloud : function () {
@@ -337,8 +314,6 @@ var Start = {
         tweenPlayer.to({x: this.player.sprite.body.x-dx, y: this.player.sprite.body.y-dy}, time);
         tweenPlayer.onComplete.add(function () {
             this.swapClouds();
-            //this.player.sprite.body.collides(this.startPlatformCollisionGroup, this.player.landedOnStartPlatform, this);
-            //this.player.sprite.body.collides(this.secondPlatformCollisionGroup, this.player.landedOnSecondPlatform, this);
             this.player.chargingAnimation();
         }, this);
         tweenSecondPlatform.start();
@@ -347,4 +322,59 @@ var Start = {
     }
 };
 
-var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', Start);
+var Boot = {
+    create : function(){   
+        game.physics.startSystem(Phaser.Physics.P2JS);
+        game.state.start('Load');
+    }
+}
+
+var Load = {
+    preload : function(){
+        
+        game.stage.backgroundColor = 0xffffff;
+        var loadingLabel = game.add.text(400,300,'loading ...',{font: '20px Courier', fill: '#fffff'});
+        
+        game.load.image('platform', 'assets/img/platform.png');
+        game.load.bitmapFont('desyrel', 'assets/fonts/desyrel.png', 'assets/fonts/desyrel.xml');
+        game.load.image('background', 'assets/img/background.png');
+        game.load.image('man', 'assets/img/man.png');
+        game.load.image('platform', 'assets/img/simpleplatform.png');
+        game.load.image('moon', 'assets/img/moon.png');
+        game.load.image('mountains1', 'assets/img/mountain1.png');
+        game.load.image('mountains2', 'assets/img/mountain2.png');
+        game.load.image('cloud', 'assets/img/simplecloud.png');
+        game.load.spritesheet('crosshair', '/assets/img/circle.png', 50, 50, 6);
+        game.load.spritesheet('player-idle', '/assets/img/man_stand.png', 68, 100, 5);
+        game.load.spritesheet('player-beam-in', '/assets/img/man_tele_hin.png', 68, 72, 13);
+        game.load.spritesheet('player-beam-out', '/assets/img/man_tele_rück.png', 68, 72, 13);
+        game.load.spritesheet('player-fall', '/assets/img/man_fall.png', 68, 100, 2);
+        game.load.spritesheet('charging1', '/assets/img/circle.png', 90, 90, 31);
+        game.load.spritesheet('arrowman', 'assets/img/man_arrowman.png', 36, 60, 2);
+        game.load.physics('physicsData', 'assets/physics/sprites.json');
+    },
+    create : function(){
+        game.state.start('Menu');
+    }
+}
+
+var Menu = {
+    create : function(){
+        var nameLabel = game.add.text(10,10,'Menu: Press Space to start',{font: '20px Courier', fill: '#fffff'});
+
+        var spacekey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        spacekey.onDown.addOnce(this.startGame,this);
+    },
+    startGame : function(){
+        game.state.start('Play');
+    }
+}
+
+var game = new Phaser.Game(800, 600, Phaser.CANVAS, '');
+
+game.state.add('Boot',Boot);
+game.state.add('Load',Load);
+game.state.add('Menu',Menu);
+game.state.add('Play',Play);
+
+game.state.start('Boot');
