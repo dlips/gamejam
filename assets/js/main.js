@@ -20,12 +20,14 @@ var Player = {
 	    this.sprite.body.setZeroDamping();
         this.state = 'falling';
         this.fallingAnimation();
-        this.powerbar = game.add.graphics(0,0);
+        this.powerbar       = game.add.graphics(0,0);
         this.powerbarborder = game.add.graphics(0,0);
+        this.anglebarborder = game.add.graphics(0,0);
+        this.anglebar       = game.add.graphics(0,0);
     },
     teleport : function (x, y) {
-        //this.angleCounter.destroy();
-        this.anglebar.destroy();
+        this.anglebarborder.clear();
+        this.anglebar.clear();
         this.powerbar.clear();
         this.powerbarborder.clear();
         game.time.events.remove(this.powerTimer);
@@ -52,7 +54,6 @@ var Player = {
     },
     fallingAnimation : function() {
         this.sprite.body.motionState = Phaser.Physics.P2.Body.DYNAMIC;
-        
         this.sprite.loadTexture('player-fall', 0);
         this.sprite.animations.add('player-fall');
         this.sprite.animations.play('player-fall', 15, true);
@@ -63,38 +64,25 @@ var Player = {
         this.sprite.loadTexture('player-idle', 0);
         this.sprite.animations.add('player-idle');
         this.sprite.animations.play('player-idle', 24, true);
+        
+        this.anglebarborder.lineStyle(10,0x9033FF);
+        this.anglebarborder.arc(50, 550, 100, 0, 3*Math.PI/2, true);
 
-        var frame1 = [];
-        for (var i = 0; i < 31; i++) {
-            frame1.push(i);
-        }
-        for (var i = 1; i < 30; i++) {
-            frame1.push(30-i);
-        }
-        this.anglebar = game.add.sprite(this.sprite.body.x, this.sprite.body.y-playeroffset, 'charging1');
-        this.anglebar.animations.add('charging1',frame1);
-        this.anglebar.animations.play('charging1', 10, true);
-        
         ctime = game.time.totalElapsedSeconds();
-        
-        /*this.angleCounter = game.add.text(game.world.centerX, game.world.centerY, this.aimAngle, { 
-            font: "64px Arial", 
-            fill: "#ffffff", 
-            align: "center" 
-        });
-        this.angleTimer = game.time.events.loop(Phaser.Timer.SECOND / 10, function() {
+        this.angleTimer = game.time.events.loop(Phaser.Timer.SECOND / 50, function() {
             var t = game.time.totalElapsedSeconds();
-            var angle = (90 * (t-ctime)/fullchargtime) % 180;
-            if (angle > 90) {
-                angle = 180 - angle;
+            var angle = ((Math.PI/2) * (t-ctime)/fullchargtime) % Math.PI;
+            if (angle > (Math.PI/2)) {
+                angle = Math.PI - angle;
             }
-            this.angleCounter.setText(angle);
-        }, this);*/
+            angle = Math.PI/2 - angle;
+            this.anglebar.clear();
+            this.anglebar.lineStyle(10,0xf76969);
+            this.anglebar.arc(50, 550, 100, 0, 3*Math.PI/2+angle, true);
+        }, this);
     },
-    chargingAnimation2 : function () {
-        this.anglebar.animations.paused = true;
-        
-        this.powerbarborder.lineStyle(2, 0x0099FF, 1);
+    chargingAnimation2 : function () {        
+        this.powerbarborder.lineStyle(2, 0x0099FF);
         this.powerbarborder.drawRect(125, 550, 100, 20);
         
         ctime = game.time.totalElapsedSeconds();
@@ -106,7 +94,7 @@ var Player = {
                 power = 200 - power;
             }
             this.powerbar.clear();
-            this.powerbar.lineStyle(2, 0x0099FF, 1);
+            this.powerbar.lineStyle(2, 0x0099FF);
             this.powerbar.drawRect(125, 550, power, 20);
             this.powerbar.beginFill(0x0099FF);
         }, this);
