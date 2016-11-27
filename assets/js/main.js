@@ -5,7 +5,6 @@ var points = 0.0;
 var gravity = 900;
 var movetime = 1000;
 var chargeanimationFPS = 40;
-var startrect;
 
 var showCollisionBoxes = false;
 
@@ -225,6 +224,8 @@ var Play = {
         this.pointtext.stroke = '#000000';
         this.pointtext.strokeThickness = 5;
 
+        this.rectDelete();
+
         // Zielen
         this.inputMode = 'idle'; // angel, radius
         this.crosshair = game.make.sprite('crosshair');
@@ -345,6 +346,26 @@ var Play = {
         text.events.onInputDown.add(function() {
             game.state.restart();
         }, this);
+    },
+    rectDelete : function () {
+        var startrect = game.add.graphics(0,0);
+        var ct = game.time.totalElapsedSeconds();
+        var alpha = 1;
+        var radius = 1000;
+        startrect.beginFill(0x40FF7E,alpha);
+        startrect.drawCircle(400,300,radius);
+        var scaleloop = game.time.events.loop(Phaser.Timer.SECOND / 50, function() {
+            var t = game.time.totalElapsedSeconds() - ct;
+            alpha = alpha - 0.005*t;
+            radius = radius - 10*t;
+            if(radius<60){
+                alpha = 0;
+                game.time.events.remove(scaleloop);
+            }
+            startrect.clear();
+            startrect.beginFill(0x40FF7E,alpha);
+            startrect.drawCircle(400,300,radius);
+        }, this);  
     }
 };
 
@@ -387,29 +408,35 @@ var Menu = {
         var menutext = game.add.bitmapText(275, 175, 'desyrel', 'Portalien', 64);
         //var nameLabel = game.add.text(10,10,'Menu: Press Space to start',{font: '20px Courier', fill: '#fffff'});
 
-        startrect = game.add.graphics(0,0);
+        var startrect = game.add.graphics(0,0);
         startrect.inputEnabled = true;
         startrect.lineStyle(2,0x4669a0);
         startrect.beginFill(0x4669a0,1);
         var radius = 50;
+        var alpha = 1;
         startrect.drawCircle(400,300,radius);
         startrect.events.onInputDown.add(function(){
             startrect.clear();
-            startrect.beginFill(0x933f3f,1);
+            alpha = 0.5;
+            startrect.beginFill(0x40FF7E,alpha);
             startrect.drawCircle(400,300,radius);     
         }, this);
         startrect.events.onInputUp.add(function(){
             var ct = game.time.totalElapsedSeconds();
             var scaleloop = game.time.events.loop(Phaser.Timer.SECOND / 50, function() {
                 var t = game.time.totalElapsedSeconds() - ct;
+                alpha = alpha + 0.005*t;
                 radius = radius + 10*t;
                 if(radius>1000){
+                    alpha = 1;
+                    this.startGame();
                     game.time.events.remove(scaleloop);
                 }
+                startrect.clear();
+                startrect.beginFill(0x40FF7E,alpha);
                 startrect.drawCircle(400,300,radius);
             }, this);  
         },this);
-
         var spacekey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spacekey.onDown.addOnce(this.startGame,this);
     },
