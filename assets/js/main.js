@@ -4,8 +4,10 @@ var cloudRef = {x: 50, y: 560};
 var points = 0.0;
 var gravity = 900;
 var movetime = 1000;
+var chargeanimationFPS = 40;
 
 var showCollisionBoxes = false;
+
 
 var Player = {
     init : function (x, y) {
@@ -13,9 +15,11 @@ var Player = {
         this.sprite.enableBody = true;
         game.physics.p2.enable(this.sprite, showCollisionBoxes);
         this.sprite.body.motionState = Phaser.Physics.P2.Body.DYNAMIC;
-        this.sprite.body.setRectangle(20,100);
+        this.sprite.body.setRectangle(45,110);
         this.sprite.animations.add('player-idle');
-        this.sprite.animations.play('player-idle', 24, true);
+        this.sprite.scale.setTo(0.25, 0.25);
+        this.sprite.smoothed = true;
+        this.sprite.animations.play('player-idle', chargeanimationFPS, true);
         this.sprite.body.collideWorldBounds = true;
 	    this.sprite.body.fixedRotation = true;
 	    this.sprite.body.setZeroDamping();
@@ -35,7 +39,8 @@ var Player = {
         this.state = 'beaming';
         this.sprite.loadTexture('player-beam-in', 0);
         var animationOut = this.sprite.animations.add('beam');
-        this.sprite.animations.play('beam', 50, false);
+        this.sprite.scale.setTo(0.25, 0.25);
+        this.sprite.animations.play('beam', 40, false);
         animationOut.onComplete.add(function () {
             this.move(x, y);
             this.sprite.loadTexture('player-beam-out');
@@ -43,7 +48,7 @@ var Player = {
             this.sprite.animations.play('beam2', 50, false);
             animationIn.onComplete.add(function () {
                 this.sprite.loadTexture('player-idle');
-                this.sprite.animations.play('player-idle', 24, true);
+                this.sprite.animations.play('player-idle', chargeanimationFPS, true);
                 this.state = 'falling';
                 this.fallingAnimation();
             }, this);
@@ -64,7 +69,7 @@ var Player = {
         this.sprite.body.motionState = Phaser.Physics.P2.Body.STATIC;
         this.sprite.loadTexture('player-idle', 0);
         this.sprite.animations.add('player-idle');
-        this.sprite.animations.play('player-idle', 24, true);
+        this.sprite.animations.play('player-idle', chargeanimationFPS, true);
         
         this.anglebarborder.lineStyle(10,0x9033FF);
         this.anglebarborder.arc(50, 550, 100, 0, 3*Math.PI/2, true);
@@ -174,8 +179,8 @@ var Play = {
                 max : cloudRef.y
             },
             length : {
-                min : 50,
-                max : 120
+                min : 120,
+                max : 150
             }
         };
         this.platformGroup = game.add.group();
@@ -270,7 +275,8 @@ var Play = {
     swapClouds : function () {
         this.startplatform.destroy();
         this.startplatform = this.secondplatform;
-        this.startPlatformCollisionGroup = this.startPlatformCollisionGroup;
+        this.startplatform.body.removeCollisionGroup(this.secondPlatformCollisionGroup);
+        this.startplatform.body.setCollisionGroup(this.startPlatformCollisionGroup);
         this.spawnsecondcloud();
     },
     spawnsecondcloud : function () {
@@ -329,15 +335,14 @@ var Load = {
         game.load.image('platform', 'assets/img/platform.png');
         game.load.bitmapFont('desyrel', 'assets/fonts/desyrel.png', 'assets/fonts/desyrel.xml');
         game.load.image('background', 'assets/img/background.png');
-        game.load.image('man', 'assets/img/man.png');
         game.load.image('platform', 'assets/img/simpleplatform.png');
         game.load.image('moon', 'assets/img/moon.png');
         game.load.image('mountains1', 'assets/img/mountain1.png');
         game.load.image('mountains2', 'assets/img/mountain2.png');
         game.load.image('cloud', 'assets/img/simplecloud.png');
         game.load.spritesheet('crosshair', '/assets/img/circle.png', 50, 50, 6);
-        game.load.spritesheet('player-idle', '/assets/img/man_stand.png', 68, 100, 5);
-        game.load.spritesheet('player-beam-in', '/assets/img/man_tele_hin.png', 68, 72, 13);
+        game.load.spritesheet('player-idle', '/assets/img/alienstanding.png', 192, 477, 20);
+        game.load.spritesheet('player-beam-in', '/assets/img/alienbeam.png', 557, 750, 20);
         game.load.spritesheet('player-beam-out', '/assets/img/man_tele_rück.png', 68, 72, 13);
         game.load.spritesheet('player-fall', '/assets/img/man_fall.png', 68, 100, 2);
         game.load.spritesheet('charging1', '/assets/img/circle.png', 90, 90, 31);
