@@ -52,9 +52,10 @@ var Player = {
         game.time.events.remove(this.powerTimer);
         this.state = 'beaming';
         this.sprite.loadTexture('player-beam-in', 0);
+        this.sprite.anchor.x = 0.5;
         var animationOut = this.sprite.animations.add('beam');
         this.sprite.scale.setTo(0.25, 0.25);
-        this.sprite.animations.play('beam', 40, false);
+        this.sprite.animations.play('beam', 20, false);
         animationOut.onComplete.add(function () {
             this.move(x, y);
             this.sprite.loadTexture('player-beam-out');
@@ -130,17 +131,19 @@ var Player = {
         }
     },
     landedOnSecondPlatform : function(player, platform) {
-        var y1 = player.body.y + player.height;
+        var y1 = player.sprite.bottom;
         var y2 = platform.y;
         if (y1 <= y2) {
-            console.log("OK: " + y1 + " " + y2);
-        }
-        if(this.player.state == 'falling') {
+            if(this.player.state == 'falling') {
             this.moveToReferencePosition();
             this.player.state = 'standing';
             this.player.sprite.body.setZeroVelocity();
             points = points + 1.0;
+            }
+        } else {
+            this.playerIsDead();
         }
+        
     }
 };
 
@@ -259,14 +262,7 @@ var Play = {
         this.mountainsFore.tilePosition.x -= 0.3;
         this.mountainsBack.tilePosition.x -= 0.1;
         if(this.player.state == 'falling' && ((this.player.sprite.body.y > this.game.height) || (this.player.sprite.body.x > this.game.width))){
-            this.player.state = 'dead';
-            var text = game.add.bitmapText(400, 300, 'desyrel', 'Scrub Try Again', 64);
-            text.anchor.x = 0.5;
-            text.anchor.y = 0.5;
-            text.inputEnabled = true;
-            text.events.onInputDown.add(function() {
-                game.state.restart();
-            }, this);
+            this.playerIsDead();
         }
         
         if(this.player.sprite.body.y<0 && this.arrowsprite == null){
@@ -339,6 +335,16 @@ var Play = {
         tweenSecondPlatform.start();
         tweenFirstPlatform.start();
         tweenPlayer.start();
+    },
+    playerIsDead : function () {
+        this.player.state = 'dead';
+        var text = game.add.bitmapText(400, 300, 'desyrel', 'Scrub Try Again', 64);
+        text.anchor.x = 0.5;
+        text.anchor.y = 0.5;
+        text.inputEnabled = true;
+        text.events.onInputDown.add(function() {
+            game.state.restart();
+        }, this);
     }
 };
 
@@ -363,7 +369,7 @@ var Load = {
         game.load.image('mountains1', 'assets/img/mountain1.png');
         game.load.image('mountains2', 'assets/img/mountain2.png');
         game.load.spritesheet('player-idle', '/assets/img/alienstanding.png', 192, 477, 20);
-        game.load.spritesheet('player-beam-in', '/assets/img/alienbeam.png', 557, 750, 20);
+        game.load.spritesheet('player-beam-in', '/assets/img/alienbeam.png', 610, 748, 20);
         game.load.spritesheet('player-beam-out', '/assets/img/man_tele_rück.png', 68, 72, 13);
         game.load.spritesheet('player-fall', '/assets/img/man_fall.png', 68, 100, 2);
         game.load.spritesheet('arrowman', 'assets/img/man_arrowman.png', 36, 60, 2);
