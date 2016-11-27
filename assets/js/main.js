@@ -412,13 +412,14 @@ var Load = {
 var Menu = {
     create : function(){
 
-        var menutext = game.add.bitmapText(275, 175, 'desyrel', 'Portalien', 64);
 
         game.stage.backgroundColor = 0xffffff;
         
         this.menumoon = this.game.add.tileSprite(0,0,800,600,'menumoon');
         this.menumount1 = this.game.add.tileSprite(0,0,800,600,'menumountain1');
         this.menumount2 = this.game.add.tileSprite(0,0,800,600,'menumountain2');
+        
+        var menutext = game.add.bitmapText(275, 175, 'desyrel', 'Portalien', 64);
 
         var startrect = game.add.graphics(0,0);
         startrect.inputEnabled = true;
