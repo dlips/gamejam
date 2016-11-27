@@ -4,11 +4,13 @@ var cloudRef = {x: 50, y: 560};
 var points = 0.0;
 var playeroffset = 68;
 
+var showCollisionBoxes = false;
+
 var Player = {
     init : function (x, y) {
         this.sprite = game.add.sprite(x, y, 'player-idle');
         this.sprite.enableBody = true;
-        game.physics.p2.enable(this.sprite, true);
+        game.physics.p2.enable(this.sprite, showCollisionBoxes);
         this.sprite.body.motionState = Phaser.Physics.P2.Body.DYNAMIC;
         this.sprite.body.setRectangle(20,100);
         this.sprite.animations.add('player-idle');
@@ -193,15 +195,26 @@ var Start = {
         this.player.sprite.body.collides(this.secondPlatformCollisionGroup, this.player.landedOnSecondPlatform, this);
 
         // Plattformen erstellen
+        // Setze randombereiche fuer position und laenge der platformen
+        this.randomRange = {
+            x : {
+                min : 250,
+                max : this.game.width - 100
+            },
+            y : {
+                min : 250,
+                max : this.game.height - 100
+            },
+            length : {
+                min : 50,
+                max : 120
+            }
+        };
         this.platformGroup = game.add.group();
         this.platformGroup.enableBody = true;
         this.platformGroup.physicsBodyType = Phaser.Physics.P2JS;
         //this.startplatform = this.platformGroup.create(cloudRef.x, cloudRef.y, 'cloud');
-        var length = 180;
-        this.startplatform = game.add.tileSprite(cloudRef.x, cloudRef.y, length, 8, 'platform');
-        game.physics.p2.enable(this.startplatform, true);
-        this.startplatform.body.setRectangle(length, 8);
-        this.startplatform.body.static = true;
+        this.startplatform = this.generatePlatform(cloudRef.x, cloudRef.y, 60);
         this.startplatform.body.setCollisionGroup(this.startPlatformCollisionGroup);
         this.startplatform.body.collides(this.playerCollisionGroup);
         this.spawnsecondcloud();
@@ -278,6 +291,13 @@ var Start = {
         }
         this.pointtext.text = points + '';
     },
+    generatePlatform : function(x, y, length) {
+        var newPlatform = game.add.tileSprite(x, y, length, 24, 'platform');
+        game.physics.p2.enable(newPlatform, showCollisionBoxes);
+        newPlatform.body.setRectangle(length, 24);
+        newPlatform.body.static = true;
+        return newPlatform;
+    },
     swapClouds : function () {
         this.startplatform.destroy();
         this.startplatform = this.secondplatform;
@@ -287,11 +307,19 @@ var Start = {
         this.spawnsecondcloud();
     },
     spawnsecondcloud : function () {
-        this.cloudspawnx = game.rnd.integerInRange(this.player.sprite.body.x+250, this.game.width-100);
-        this.cloudspawny = game.rnd.integerInRange(this.game.height-this.player.sprite.body.y+250, this.game.height);
-        var secondplatform = this.platformGroup.create(this.cloudspawnx,this.game.height-this.cloudspawny,'cloud');
-        secondplatform.body.setRectangle(135,31);
-        secondplatform.body.static = true;
+        var cloudspawnx = game.rnd.integerInRange(
+            this.player.sprite.body.x + this.randomRange.x.min, 
+            this.randomRange.x.max
+        );
+        var cloudspawny = this.game.height - game.rnd.integerInRange(
+            this.randomRange.y.min, 
+            this.randomRange.y.max
+        );
+        var length = game.rnd.integerInRange(
+            this.randomRange.length.min, 
+            this.randomRange.length.max
+        );
+        var secondplatform = this.generatePlatform(cloudspawnx, cloudspawny,length);
         secondplatform.body.setCollisionGroup(this.secondPlatformCollisionGroup);
         secondplatform.body.collides(this.playerCollisionGroup);
         this.secondplatform = secondplatform;
