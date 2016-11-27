@@ -410,7 +410,7 @@ var Load = {
         game.load.spritesheet('player-idle', '/assets/img/alienstanding.png', 192, 477, 20);
         game.load.spritesheet('player-beam-in', '/assets/img/alienbeam.png', 609, 751, 36);
         game.load.spritesheet('player-beam-out', '/assets/img/alienbeam_back.png', 559, 731, 36);
-        game.load.spritesheet('player-fall', '/assets/img/man_fall.png', 68, 100, 2);
+        game.load.spritesheet('player-fall', '/assets/img/alien_falling.png', 315, 410, 50);
         game.load.spritesheet('arrowman', 'assets/img/man_arrowman.png', 36, 60, 2);
         game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
     },
