@@ -238,6 +238,7 @@ var Play = {
         backtoMenu.drawCircle(750,550,50);
         backtoMenu.inputEnabled = true;
         backtoMenu.events.onInputDown.add(function() {
+            introportal = false;
             game.state.remove();
             game.state.start('Menu');
         }, this);
@@ -442,6 +443,16 @@ var Menu = {
         
         var menutext = game.add.bitmapText(275, 175, 'desyrel', 'Portalien', 64);
 
+        this.apple = game.add.graphics(0,0);
+        this.apple.inputEnabled = true;
+        this.apple.lineStyle(1,0xff0000);
+        this.apple.beginFill(0xff0000,1);
+        this.apple.drawRect(588,550,2,2);
+
+        this.apple.events.onInputDown.add(function(){
+            var loadingLabel = game.add.text(400,300,'Presented by CJD',{font: '20px Courier', fill: '#fffff'});
+        }, this);
+
         var startrect = game.add.graphics(0,0);
         startrect.inputEnabled = true;
         startrect.lineStyle(2,0x4669a0);
@@ -478,6 +489,7 @@ var Menu = {
         game.state.start('Play');
     },
     update : function() {
+        this.apple.x -= 0.3;
         this.menumoon.tilePosition.x -= 0.05;
         this.menumount1.tilePosition.x -= 0.1;
         this.menumount2.tilePosition.x -= 0.3;
