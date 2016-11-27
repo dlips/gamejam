@@ -180,7 +180,6 @@ var Play = {
         this.platformGroup = game.add.group();
         this.platformGroup.enableBody = true;
         this.platformGroup.physicsBodyType = Phaser.Physics.P2JS;
-        //this.startplatform = this.platformGroup.create(cloudRef.x, cloudRef.y, 'cloud');
         this.startplatform = this.generatePlatform(cloudRef.x, cloudRef.y, 60);
         this.startplatform.body.setCollisionGroup(this.startPlatformCollisionGroup);
         this.startplatform.body.collides(this.playerCollisionGroup);
@@ -259,10 +258,12 @@ var Play = {
         this.pointtext.text = points + '';
     },
     generatePlatform : function(x, y, length) {
-        var newPlatform = game.add.tileSprite(x, y, length, 24, 'platform');
+        var newPlatform = game.add.sprite(x, y, 'platform');
         game.physics.p2.enable(newPlatform, showCollisionBoxes);
-        newPlatform.body.setRectangle(length, 24);
+        newPlatform.scale.setTo(length/3, 1);
+        newPlatform.body.setRectangle(length, 21);
         newPlatform.body.static = true;
+        newPlatform.smoothed = false;
         return newPlatform;
     },
     swapClouds : function () {
