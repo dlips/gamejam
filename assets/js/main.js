@@ -18,8 +18,10 @@ var Player = {
 	    this.sprite.body.setZeroDamping();
         this.state = 'falling';
         this.fallingAnimation();
-        this.powerbar = game.add.graphics(0,0);
+        this.powerbar       = game.add.graphics(0,0);
         this.powerbarborder = game.add.graphics(0,0);
+        this.anglebarborder = game.add.graphics(0,0);
+        this.anglebar       = game.add.graphics(0,0);
     },
     teleport : function (x, y) {
         //this.angleCounter.destroy();
@@ -62,7 +64,7 @@ var Player = {
         this.sprite.animations.add('player-idle');
         this.sprite.animations.play('player-idle', 24, true);
 
-        var frame1 = [];
+        /*var frame1 = [];
         for (var i = 0; i < 31; i++) {
             frame1.push(i);
         }
@@ -71,8 +73,11 @@ var Player = {
         }
         this.anglebar = game.add.sprite(this.sprite.body.x, this.sprite.body.y-playeroffset, 'charging1');
         this.anglebar.animations.add('charging1',frame1);
-        this.anglebar.animations.play('charging1', 10, true);
+        this.anglebar.animations.play('charging1', 10, true);*/
         
+        this.anglebarborder.lineStyle(10,0x9033FF);
+        this.anglebarborder.arc(50, 550, 100, 0, 3*Math.PI/2, true) 
+
         ctime = game.time.totalElapsedSeconds();
         
         /*this.angleCounter = game.add.text(game.world.centerX, game.world.centerY, this.aimAngle, { 
@@ -92,7 +97,7 @@ var Player = {
     chargingAnimation2 : function () {
         this.anglebar.animations.paused = true;
         
-        this.powerbarborder.lineStyle(2, 0x0099FF, 1);
+        this.powerbarborder.lineStyle(2, 0x0099FF);
         this.powerbarborder.drawRect(125, 550, 100, 20);
         
         ctime = game.time.totalElapsedSeconds();
@@ -104,7 +109,7 @@ var Player = {
                 power = 200 - power;
             }
             this.powerbar.clear();
-            this.powerbar.lineStyle(2, 0x0099FF, 1);
+            this.powerbar.lineStyle(2, 0x0099FF);
             this.powerbar.drawRect(125, 550, power, 20);
             this.powerbar.beginFill(0x0099FF);
         }, this);
