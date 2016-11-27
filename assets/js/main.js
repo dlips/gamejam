@@ -406,7 +406,7 @@ var Load = {
     preload : function(){
         
         game.stage.backgroundColor = 0xffffff;
-        var loadingLabel = game.add.text(400,300,'loading ...',{font: '20px Courier', fill: '#fffff'});
+        var loadingLabel = game.add.text(400,300,'loading ... dman sucks',{font: '20px Courier', fill: '#fffff'});
 
         game.load.image('menuscreen','assets/img/menu.png');    
         game.load.image('menumoon','assets/img/menumoon.png');
