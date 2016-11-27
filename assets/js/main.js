@@ -78,7 +78,7 @@ var Player = {
         this.sprite.body.motionState = Phaser.Physics.P2.Body.DYNAMIC;
         this.sprite.loadTexture('player-fall', 0);
         this.sprite.animations.add('player-fall');
-        this.sprite.animations.play('player-fall', 15, true);
+        this.sprite.animations.play('player-fall', 150, true);
     },
     chargingAnimation : function () {
         this.sprite.body.setZeroVelocity();
