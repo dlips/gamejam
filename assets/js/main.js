@@ -387,7 +387,10 @@ var Load = {
         game.stage.backgroundColor = 0xffffff;
         var loadingLabel = game.add.text(400,300,'loading ...',{font: '20px Courier', fill: '#fffff'});
 
-        game.load.image('menuscreen','assets/img/menu.png');
+        game.load.image('menuscreen','assets/img/menu.png');    
+        game.load.image('menumoon','assets/img/menumoon.png');
+        game.load.image('menumountain1','assets/img/menumountain1.png');
+        game.load.image('menumountain2','assets/img/menumountain2.png');
         game.load.image('background','assets/img/background.png');
         game.load.image('platform', 'assets/img/platform.png');
         game.load.bitmapFont('desyrel', 'assets/fonts/desyrel.png', 'assets/fonts/desyrel.xml');
@@ -409,9 +412,13 @@ var Load = {
 var Menu = {
     create : function(){
 
-        game.add.sprite(0, 0, 'menuscreen');
         var menutext = game.add.bitmapText(275, 175, 'desyrel', 'Portalien', 64);
-        //var nameLabel = game.add.text(10,10,'Menu: Press Space to start',{font: '20px Courier', fill: '#fffff'});
+
+        game.stage.backgroundColor = 0xffffff;
+        
+        this.menumoon = this.game.add.tileSprite(0,0,800,600,'menumoon');
+        this.menumount1 = this.game.add.tileSprite(0,0,800,600,'menumountain1');
+        this.menumount2 = this.game.add.tileSprite(0,0,800,600,'menumountain2');
 
         var startrect = game.add.graphics(0,0);
         startrect.inputEnabled = true;
@@ -447,6 +454,11 @@ var Menu = {
     },
     startGame : function(){
         game.state.start('Play');
+    },
+    update : function() {
+        this.menumoon.tilePosition.x -= 0.05;
+        this.menumount1.tilePosition.x -= 0.1;
+        this.menumount2.tilePosition.x -= 0.3;
     }
 }
 
