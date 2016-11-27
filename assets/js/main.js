@@ -6,6 +6,7 @@ var gravity = 900;
 var movetime = 1000;
 var chargeanimationFPS = 40;
 var menutimeportal = 3;
+var introportal = false;
 
 var showCollisionBoxes = false;
 
@@ -348,6 +349,7 @@ var Play = {
         }, this);
     },
     rectDelete : function () {
+        if (introportal == false){
         var startrect = game.add.graphics(0,0);
         var ct = game.time.totalElapsedSeconds();
         var alpha = 1;
@@ -365,7 +367,9 @@ var Play = {
             startrect.clear();
             startrect.beginFill(0x40FF7E,alpha);
             startrect.drawCircle(400,300,radius);
-        }, this);  
+        }, this);
+        introportal = true;
+        }
     }
 };
 
