@@ -1,8 +1,9 @@
-var fullchargtime = 3;
+var fullchargtime = 1;
 var ctime = 0.0;
 var cloudRef = {x: 50, y: 560};
 var points = 0.0;
-var playeroffset = 68;
+var gravity = 900;
+var movetime = 1000;
 
 var showCollisionBoxes = false;
 
@@ -127,7 +128,7 @@ var Play = {
         //Physics & Collision
         game.physics.p2.setImpactEvents(true);
         game.physics.p2.restitution = 0;
-        game.physics.p2.gravity.y = 600;
+        game.physics.p2.gravity.y = gravity;
         this.playerCollisionGroup = game.physics.p2.createCollisionGroup();
         this.startPlatformCollisionGroup = game.physics.p2.createCollisionGroup();
         this.secondPlatformCollisionGroup = game.physics.p2.createCollisionGroup();
@@ -292,7 +293,7 @@ var Play = {
         this.secondplatform = secondplatform;
     },
     moveToReferencePosition : function () {
-        var time = 1500;
+        var time = movetime;
         var tweenSecondPlatform = game.add.tween(this.secondplatform.body);
         tweenSecondPlatform.to({x: cloudRef.x, y: cloudRef.y}, time);
 
