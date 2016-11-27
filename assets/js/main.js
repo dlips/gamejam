@@ -128,7 +128,12 @@ var Player = {
             this.player.sprite.body.setZeroVelocity();
         }
     },
-    landedOnSecondPlatform : function() {
+    landedOnSecondPlatform : function(player, platform) {
+        var y1 = player.body.y + player.height;
+        var y2 = platform.y;
+        if (y1 <= y2) {
+            console.log("OK: " + y1 + " " + y2);
+        }
         if(this.player.state == 'falling') {
             this.moveToReferencePosition();
             this.player.state = 'standing';
