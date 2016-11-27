@@ -356,6 +356,7 @@ var Load = {
         var loadingLabel = game.add.text(400,300,'loading ...',{font: '20px Courier', fill: '#fffff'});
 
         game.load.image('menuscreen','assets/img/menu.png');
+        game.load.image('background','assets/img/background.png');
         game.load.image('platform', 'assets/img/platform.png');
         game.load.bitmapFont('desyrel', 'assets/fonts/desyrel.png', 'assets/fonts/desyrel.xml');
         game.load.image('moon', 'assets/img/moon.png');
