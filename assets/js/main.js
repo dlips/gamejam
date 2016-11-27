@@ -1,6 +1,6 @@
 var fullchargtime = 3;
 var ctime = 0.0;
-var cloudRef = {x: 75, y: 560};
+var cloudRef = {x: 50, y: 560};
 var points = 0.0;
 var playeroffset = 68;
 
@@ -10,7 +10,7 @@ var Player = {
         this.sprite.enableBody = true;
         game.physics.p2.enable(this.sprite, true);
         this.sprite.body.motionState = Phaser.Physics.P2.Body.DYNAMIC;
-        this.sprite.body.setRectangle(20,68);
+        this.sprite.body.setRectangle(20,100);
         this.sprite.animations.add('player-idle');
         this.sprite.animations.play('player-idle', 24, true);
         this.sprite.body.collideWorldBounds = true;
@@ -133,9 +133,6 @@ var Player = {
 var Play = {
     aimAngularVelocity : (90 / 3),
     aimRangeSpeed : (200 / 3),
-    preload :  function () {
-
-    },
     create : function () {
         //Physics & Collision
         game.physics.p2.setImpactEvents(true);
@@ -178,8 +175,11 @@ var Play = {
         this.platformGroup = game.add.group();
         this.platformGroup.enableBody = true;
         this.platformGroup.physicsBodyType = Phaser.Physics.P2JS;
-        this.startplatform = this.platformGroup.create(cloudRef.x, cloudRef.y, 'cloud');
-        this.startplatform.body.setRectangle(135,31);
+        //this.startplatform = this.platformGroup.create(cloudRef.x, cloudRef.y, 'cloud');
+        var length = 180;
+        this.startplatform = game.add.tileSprite(cloudRef.x, cloudRef.y, length, 8, 'platform');
+        game.physics.p2.enable(this.startplatform, true);
+        this.startplatform.body.setRectangle(length, 8);
         this.startplatform.body.static = true;
         this.startplatform.body.setCollisionGroup(this.startPlatformCollisionGroup);
         this.startplatform.body.collides(this.playerCollisionGroup);
@@ -307,6 +307,7 @@ var Load = {
         game.stage.backgroundColor = 0xffffff;
         var loadingLabel = game.add.text(400,300,'loading ...',{font: '20px Courier', fill: '#fffff'});
         
+        game.load.image('platform', 'assets/img/platform.png');
         game.load.bitmapFont('desyrel', 'assets/fonts/desyrel.png', 'assets/fonts/desyrel.xml');
         game.load.image('background', 'assets/img/background.png');
         game.load.image('man', 'assets/img/man.png');
