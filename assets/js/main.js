@@ -271,7 +271,6 @@ var Play = {
         this.startplatform = this.secondplatform;
         this.startplatform.body.removeCollisionGroup(this.secondPlatformCollisionGroup);
         this.startplatform.body.setCollisionGroup(this.startPlatformCollisionGroup);
-        //this.startPlatformCollisionGroup = this.startPlatformCollisionGroup;
         this.spawnsecondcloud();
     },
     spawnsecondcloud : function () {
