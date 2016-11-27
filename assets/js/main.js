@@ -4,8 +4,24 @@ var cloudRef = {x: 50, y: 560};
 var points = 0.0;
 var gravity = 900;
 var movetime = 1000;
+var chargeanimationFPS = 40;
+var startrect;
 
 var showCollisionBoxes = false;
+
+WebFontConfig = {
+
+    //  'active' means all requested fonts have finished loading
+    //  We set a 1 second delay before calling 'createText'.
+    //  For some reason if we don't the browser cannot render the text the first time it's created.
+    active: function() { game.time.events.add(Phaser.Timer.SECOND, function(){}, this); },
+
+    //  The Google Fonts we want to load (specify as many as you like in the array)
+    google: {
+      families: ['Chewy']
+    }
+
+};
 
 var Player = {
     init : function (x, y) {
@@ -13,11 +29,11 @@ var Player = {
         this.sprite.enableBody = true;
         game.physics.p2.enable(this.sprite, showCollisionBoxes);
         this.sprite.body.motionState = Phaser.Physics.P2.Body.DYNAMIC;
-        this.sprite.body.setRectangle(20,100);
+        this.sprite.body.setRectangle(45,110);
         this.sprite.animations.add('player-idle');
         this.sprite.scale.setTo(0.25, 0.25);
         this.sprite.smoothed = true;
-        this.sprite.animations.play('player-idle', 24, true);
+        this.sprite.animations.play('player-idle', chargeanimationFPS, true);
         this.sprite.body.collideWorldBounds = true;
 	    this.sprite.body.fixedRotation = true;
 	    this.sprite.body.setZeroDamping();
@@ -46,7 +62,7 @@ var Player = {
             this.sprite.animations.play('beam2', 50, false);
             animationIn.onComplete.add(function () {
                 this.sprite.loadTexture('player-idle');
-                this.sprite.animations.play('player-idle', 24, true);
+                this.sprite.animations.play('player-idle', chargeanimationFPS, true);
                 this.state = 'falling';
                 this.fallingAnimation();
             }, this);
@@ -67,7 +83,7 @@ var Player = {
         this.sprite.body.motionState = Phaser.Physics.P2.Body.STATIC;
         this.sprite.loadTexture('player-idle', 0);
         this.sprite.animations.add('player-idle');
-        this.sprite.animations.play('player-idle', 24, true);
+        this.sprite.animations.play('player-idle', chargeanimationFPS, true);
         
         this.anglebarborder.lineStyle(10,0x9033FF);
         this.anglebarborder.arc(50, 550, 100, 0, 3*Math.PI/2, true);
@@ -177,8 +193,8 @@ var Play = {
                 max : cloudRef.y
             },
             length : {
-                min : 50,
-                max : 120
+                min : 120,
+                max : 150
             }
         };
         this.platformGroup = game.add.group();
@@ -192,9 +208,14 @@ var Play = {
            
         // Points
         points = 0.0;
-        this.pointtext = game.add.bitmapText(0, -20, 'desyrel', points+'', 64);
+        this.pointtext = game.add.text(10, 0, points+'');
         this.pointtext.anchor.x = 0;
         this.pointtext.anchor.y = 0;
+        this.pointtext.font = 'Chewy';
+        this.pointtext.fontSize = 64;
+        this.pointtext.fill = '#FFFFFF';
+        this.pointtext.stroke = '#000000';
+        this.pointtext.strokeThickness = 5;
 
         // Zielen
         this.inputMode = 'idle'; // angel, radius
@@ -273,7 +294,8 @@ var Play = {
     swapClouds : function () {
         this.startplatform.destroy();
         this.startplatform = this.secondplatform;
-        this.startPlatformCollisionGroup = this.startPlatformCollisionGroup;
+        this.startplatform.body.removeCollisionGroup(this.secondPlatformCollisionGroup);
+        this.startplatform.body.setCollisionGroup(this.startPlatformCollisionGroup);
         this.spawnsecondcloud();
     },
     spawnsecondcloud : function () {
@@ -327,23 +349,20 @@ var Load = {
         
         game.stage.backgroundColor = 0xffffff;
         var loadingLabel = game.add.text(400,300,'loading ...',{font: '20px Courier', fill: '#fffff'});
-        
+
+        game.load.image('menuscreen','assets/img/menu.png');
+        game.load.image('background','assets/img/background.png');
         game.load.image('platform', 'assets/img/platform.png');
         game.load.bitmapFont('desyrel', 'assets/fonts/desyrel.png', 'assets/fonts/desyrel.xml');
-        game.load.image('background', 'assets/img/background.png');
-        game.load.image('platform', 'assets/img/simpleplatform.png');
         game.load.image('moon', 'assets/img/moon.png');
         game.load.image('mountains1', 'assets/img/mountain1.png');
         game.load.image('mountains2', 'assets/img/mountain2.png');
-        game.load.image('cloud', 'assets/img/simplecloud.png');
-        game.load.spritesheet('crosshair', '/assets/img/circle.png', 50, 50, 6);
         game.load.spritesheet('player-idle', '/assets/img/alienstanding.png', 192, 477, 20);
         game.load.spritesheet('player-beam-in', '/assets/img/alienbeam.png', 557, 750, 20);
         game.load.spritesheet('player-beam-out', '/assets/img/man_tele_rück.png', 68, 72, 13);
         game.load.spritesheet('player-fall', '/assets/img/man_fall.png', 68, 100, 2);
-        game.load.spritesheet('charging1', '/assets/img/circle.png', 90, 90, 31);
         game.load.spritesheet('arrowman', 'assets/img/man_arrowman.png', 36, 60, 2);
-        game.load.physics('physicsData', 'assets/physics/sprites.json');
+        game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
     },
     create : function(){
         game.state.start('Menu');
@@ -352,7 +371,33 @@ var Load = {
 
 var Menu = {
     create : function(){
-        var nameLabel = game.add.text(10,10,'Menu: Press Space to start',{font: '20px Courier', fill: '#fffff'});
+
+        game.add.sprite(0, 0, 'menuscreen');
+        var menutext = game.add.bitmapText(275, 175, 'desyrel', 'Portalien', 64);
+        //var nameLabel = game.add.text(10,10,'Menu: Press Space to start',{font: '20px Courier', fill: '#fffff'});
+
+        startrect = game.add.graphics(0,0);
+        startrect.inputEnabled = true;
+        startrect.lineStyle(2,0x4669a0);
+        startrect.beginFill(0x4669a0,1);
+        var radius = 50;
+        startrect.drawCircle(400,300,radius);
+        startrect.events.onInputDown.add(function(){
+            startrect.clear();
+            startrect.beginFill(0x933f3f,1);
+            startrect.drawCircle(400,300,radius);     
+        }, this);
+        startrect.events.onInputUp.add(function(){
+            var ct = game.time.totalElapsedSeconds();
+            var scaleloop = game.time.events.loop(Phaser.Timer.SECOND / 50, function() {
+                var t = game.time.totalElapsedSeconds() - ct;
+                radius = radius + 10*t;
+                if(radius>1000){
+                    game.time.events.remove(scaleloop);
+                }
+                startrect.drawCircle(400,300,radius);
+            }, this);  
+        },this);
 
         var spacekey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spacekey.onDown.addOnce(this.startGame,this);
