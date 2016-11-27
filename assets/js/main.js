@@ -167,11 +167,11 @@ var Play = {
         this.randomRange = {
             x : {
                 min : 250,
-                max : this.game.width - 100
+                max : game.width - 100
             },
             y : {
-                min : 250,
-                max : this.game.height - 100
+                min : 50,
+                max : cloudRef.y
             },
             length : {
                 min : 50,
@@ -278,7 +278,7 @@ var Play = {
             this.player.sprite.body.x + this.randomRange.x.min, 
             this.randomRange.x.max
         );
-        var cloudspawny = this.game.height - game.rnd.integerInRange(
+        var cloudspawny = game.rnd.integerInRange(
             this.randomRange.y.min, 
             this.randomRange.y.max
         );
