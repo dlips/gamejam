@@ -1,4 +1,4 @@
-var fullchargtime = 3;
+var fullchargtime = 1;
 var ctime = 0.0;
 var cloudRef = {x: 50, y: 560};
 var points = 0.0;
