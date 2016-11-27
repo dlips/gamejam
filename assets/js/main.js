@@ -56,7 +56,7 @@ var Player = {
         this.state = 'beaming';
         this.sprite.loadTexture('player-beam-in', 0);
         var animationOut = this.sprite.animations.add('beam');
-        this.sprite.scale.setTo(0.25, 0.25);
+        //this.sprite.scale.setTo(0.25, 0.25);
         this.sprite.animations.play('beam', 72, false);
         animationOut.onComplete.add(function () {
             this.move(x, y+teleportoffset);
@@ -416,8 +416,8 @@ var Load = {
         game.load.image('mountains1', 'assets/img/mountain1.png');
         game.load.image('mountains2', 'assets/img/mountain2.png');
         game.load.spritesheet('player-idle', '/assets/img/alienstanding.png', 192, 477, 20);
-        game.load.spritesheet('player-beam-in', '/assets/img/alienbeam.png', 609, 751, 36);
-        game.load.spritesheet('player-beam-out', '/assets/img/alienbeam_back.png', 559, 731, 36);
+        game.load.spritesheet('player-beam-in', '/assets/img/alienbeam.png', 152, 187, 36);
+        game.load.spritesheet('player-beam-out', '/assets/img/alienbeam_back.png', 139, 182, 36);
         game.load.spritesheet('player-fall', '/assets/img/alien_falling.png', 315, 410, 50);
         game.load.spritesheet('arrowman', 'assets/img/man_arrowman.png', 36, 60, 2);
         game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
