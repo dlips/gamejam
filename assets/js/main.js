@@ -5,6 +5,7 @@ var points = 0.0;
 var gravity = 900;
 var movetime = 1000;
 var chargeanimationFPS = 40;
+var startrect;
 
 var showCollisionBoxes = false;
 
@@ -334,20 +335,14 @@ var Load = {
         game.load.image('menuscreen','assets/img/menu.png');
         game.load.image('platform', 'assets/img/platform.png');
         game.load.bitmapFont('desyrel', 'assets/fonts/desyrel.png', 'assets/fonts/desyrel.xml');
-        game.load.image('background', 'assets/img/background.png');
-        game.load.image('platform', 'assets/img/simpleplatform.png');
         game.load.image('moon', 'assets/img/moon.png');
         game.load.image('mountains1', 'assets/img/mountain1.png');
         game.load.image('mountains2', 'assets/img/mountain2.png');
-        game.load.image('cloud', 'assets/img/simplecloud.png');
-        game.load.spritesheet('crosshair', '/assets/img/circle.png', 50, 50, 6);
         game.load.spritesheet('player-idle', '/assets/img/alienstanding.png', 192, 477, 20);
         game.load.spritesheet('player-beam-in', '/assets/img/alienbeam.png', 557, 750, 20);
         game.load.spritesheet('player-beam-out', '/assets/img/man_tele_rück.png', 68, 72, 13);
         game.load.spritesheet('player-fall', '/assets/img/man_fall.png', 68, 100, 2);
-        game.load.spritesheet('charging1', '/assets/img/circle.png', 90, 90, 31);
         game.load.spritesheet('arrowman', 'assets/img/man_arrowman.png', 36, 60, 2);
-        game.load.physics('physicsData', 'assets/physics/sprites.json');
     },
     create : function(){
         game.state.start('Menu');
@@ -358,7 +353,31 @@ var Menu = {
     create : function(){
 
         game.add.sprite(0, 0, 'menuscreen');
-        var nameLabel = game.add.text(10,10,'Menu: Press Space to start',{font: '20px Courier', fill: '#fffff'});
+        var menutext = game.add.bitmapText(275, 175, 'desyrel', 'Portalien', 64);
+        //var nameLabel = game.add.text(10,10,'Menu: Press Space to start',{font: '20px Courier', fill: '#fffff'});
+
+        startrect = game.add.graphics(0,0);
+        startrect.inputEnabled = true;
+        startrect.lineStyle(2,0x4669a0);
+        startrect.beginFill(0x4669a0,1);
+        var radius = 50;
+        startrect.drawCircle(400,300,radius);
+        startrect.events.onInputDown.add(function(){
+            startrect.clear();
+            startrect.beginFill(0x933f3f,1);
+            startrect.drawCircle(400,300,radius);     
+        }, this);
+        startrect.events.onInputUp.add(function(){
+            var ct = game.time.totalElapsedSeconds();
+            var scaleloop = game.time.events.loop(Phaser.Timer.SECOND / 50, function() {
+                var t = game.time.totalElapsedSeconds() - ct;
+                radius = radius + 10*t;
+                if(radius>1000){
+                    game.time.events.remove(scaleloop);
+                }
+                startrect.drawCircle(400,300,radius);
+            }, this);  
+        },this);
 
         var spacekey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spacekey.onDown.addOnce(this.startGame,this);
