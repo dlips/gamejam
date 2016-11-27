@@ -418,7 +418,7 @@ var Load = {
     preload : function(){
         
         game.stage.backgroundColor = 0xffffff;
-        var loadingLabel = game.add.text(400,300,'loading ...',{font: '20px Courier', fill: '#fffff'});
+        var loadingLabel = game.add.text(400,300,'loading ... dman sucks',{font: '20px Courier', fill: '#fffff'});
 
         game.load.image('menuscreen','assets/img/menu.png');    
         game.load.image('menumoon','assets/img/menumoon.png');
@@ -453,7 +453,7 @@ var Menu = {
         this.menumount2 = this.game.add.tileSprite(0,0,800,600,'menumountain2');
         
         var menutext = game.add.bitmapText(275, 175, 'desyrel', 'Portalien', 64);
-
+        var loadingLabel1 = game.add.text(650,550,'CMAN DMAN JMAN FUCK YEA',{font: '10px Courier', fill: '#fffff'});
         var startrect = game.add.graphics(0,0);
         startrect.inputEnabled = true;
         startrect.lineStyle(2,0x4669a0);

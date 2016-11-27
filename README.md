@@ -37,4 +37,21 @@ Nützliche Links:
 Pixelgrafik:
 http://www.piskelapp.com/
 
+Spriter für Animationen
+
+To-Do:
+
+* Store
+* Code überarbeiten / Kommentieren / Sauberer
+* Upgrades
+* Tutorial
+* Sound
+* Hud überarbiten
+* Höhenmeter
+* Credits
+* Neues Design
+* All Time Highscore
+* Android-Version
+* Apfel-Easter-Egg
+
  
