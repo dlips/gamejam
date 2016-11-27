@@ -441,7 +441,7 @@ var Menu = {
         this.menumount2 = this.game.add.tileSprite(0,0,800,600,'menumountain2');
         
         var menutext = game.add.bitmapText(275, 175, 'desyrel', 'Portalien', 64);
-
+        var loadingLabel1 = game.add.text(650,550,'CMAN DMAN JMAN FUCK YEA',{font: '10px Courier', fill: '#fffff'});
         var startrect = game.add.graphics(0,0);
         startrect.inputEnabled = true;
         startrect.lineStyle(2,0x4669a0);
