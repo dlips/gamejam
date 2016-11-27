@@ -173,8 +173,8 @@ var Play = {
                 max : cloudRef.y
             },
             length : {
-                min : 50,
-                max : 120
+                min : 120,
+                max : 150
             }
         };
         this.platformGroup = game.add.group();
@@ -269,7 +269,9 @@ var Play = {
     swapClouds : function () {
         this.startplatform.destroy();
         this.startplatform = this.secondplatform;
-        this.startPlatformCollisionGroup = this.startPlatformCollisionGroup;
+        this.startplatform.body.removeCollisionGroup(this.secondPlatformCollisionGroup);
+        this.startplatform.body.setCollisionGroup(this.startPlatformCollisionGroup);
+        //this.startPlatformCollisionGroup = this.startPlatformCollisionGroup;
         this.spawnsecondcloud();
     },
     spawnsecondcloud : function () {
