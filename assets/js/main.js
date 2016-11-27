@@ -79,7 +79,7 @@ var Player = {
         this.sprite.body.motionState = Phaser.Physics.P2.Body.DYNAMIC;
         this.sprite.loadTexture('player-fall', 0);
         this.sprite.animations.add('player-fall');
-        this.sprite.animations.play('player-fall', 15, true);
+        this.sprite.animations.play('player-fall', 150, true);
     },
     chargingAnimation : function () {
         this.sprite.body.setZeroVelocity();
@@ -230,6 +230,16 @@ var Play = {
         this.pointtext.strokeThickness = 5;
 
         this.rectDelete();
+
+        var backtoMenu = game.add.graphics(0,0);
+        backtoMenu.beginFill(0x40FF7E,0.75);
+        backtoMenu.drawCircle(750,550,50);
+        backtoMenu.inputEnabled = true;
+        backtoMenu.events.onInputDown.add(function() {
+            game.state.remove();
+            game.state.start('Menu');
+        }, this);
+        var backtoMenuText = game.add.bitmapText(730, 540, 'desyrel', 'Menu', 16);
 
         // Zielen
         this.inputMode = 'idle'; // angel, radius
@@ -408,7 +418,7 @@ var Load = {
         game.load.spritesheet('player-idle', '/assets/img/alienstanding.png', 192, 477, 20);
         game.load.spritesheet('player-beam-in', '/assets/img/alienbeam.png', 609, 751, 36);
         game.load.spritesheet('player-beam-out', '/assets/img/alienbeam_back.png', 559, 731, 36);
-        game.load.spritesheet('player-fall', '/assets/img/man_fall.png', 68, 100, 2);
+        game.load.spritesheet('player-fall', '/assets/img/alien_falling.png', 315, 410, 50);
         game.load.spritesheet('arrowman', 'assets/img/man_arrowman.png', 36, 60, 2);
         game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
     },
