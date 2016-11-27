@@ -21,7 +21,7 @@ WebFontConfig = {
 
     //  The Google Fonts we want to load (specify as many as you like in the array)
     google: {
-      families: ['Chewy']
+      families: ['Poiret One']
     }
 
 };
@@ -225,11 +225,11 @@ var Play = {
         this.pointtext = game.add.text(10, 0, points+'');
         this.pointtext.anchor.x = 0;
         this.pointtext.anchor.y = 0;
-        this.pointtext.font = 'Chewy';
+        this.pointtext.font = 'Poiret One';
         this.pointtext.fontSize = 64;
         this.pointtext.fill = '#FFFFFF';
-        this.pointtext.stroke = '#000000';
-        this.pointtext.strokeThickness = 5;
+        //this.pointtext.stroke = '#000000';
+        //this.pointtext.strokeThickness = 1;
 
         this.rectDelete();
 
