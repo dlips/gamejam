@@ -9,6 +9,19 @@ var startrect;
 
 var showCollisionBoxes = false;
 
+WebFontConfig = {
+
+    //  'active' means all requested fonts have finished loading
+    //  We set a 1 second delay before calling 'createText'.
+    //  For some reason if we don't the browser cannot render the text the first time it's created.
+    active: function() { game.time.events.add(Phaser.Timer.SECOND, function(){}, this); },
+
+    //  The Google Fonts we want to load (specify as many as you like in the array)
+    google: {
+      families: ['Chewy']
+    }
+
+};
 
 var Player = {
     init : function (x, y) {
@@ -195,9 +208,14 @@ var Play = {
            
         // Points
         points = 0.0;
-        this.pointtext = game.add.bitmapText(0, -20, 'desyrel', points+'', 64);
+        this.pointtext = game.add.text(10, 0, points+'');
         this.pointtext.anchor.x = 0;
         this.pointtext.anchor.y = 0;
+        this.pointtext.font = 'Chewy';
+        this.pointtext.fontSize = 64;
+        this.pointtext.fill = '#FFFFFF';
+        this.pointtext.stroke = '#000000';
+        this.pointtext.strokeThickness = 5;
 
         // Zielen
         this.inputMode = 'idle'; // angel, radius
@@ -343,6 +361,7 @@ var Load = {
         game.load.spritesheet('player-beam-out', '/assets/img/man_tele_rück.png', 68, 72, 13);
         game.load.spritesheet('player-fall', '/assets/img/man_fall.png', 68, 100, 2);
         game.load.spritesheet('arrowman', 'assets/img/man_arrowman.png', 36, 60, 2);
+        game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
     },
     create : function(){
         game.state.start('Menu');
