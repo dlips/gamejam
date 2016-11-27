@@ -1,6 +1,7 @@
 var fullchargtime = 1;
 var ctime = 0.0;
 var cloudRef = {x: 50, y: 560};
+var playerRef = {x : 50, y : 495};
 var points = 0.0;
 var gravity = 900;
 var movetime = 1000;
@@ -88,7 +89,9 @@ var Player = {
         this.sprite.animations.play('player-idle', chargeanimationFPS, true);
         
         this.anglebarborder.lineStyle(10,0x9033FF);
-        this.anglebarborder.arc(50, 550, 100, 0, 3*Math.PI/2, true);
+        var angleX = this.sprite.x;
+        var angleY = this.sprite.y + 55;
+        this.anglebarborder.arc(angleX, angleY, 100, 0, 3*Math.PI/2, true);
 
         ctime = game.time.totalElapsedSeconds();
         this.angleTimer = game.time.events.loop(Phaser.Timer.SECOND / 100, function() {
@@ -100,7 +103,7 @@ var Player = {
             angle = Math.PI/2 - angle;
             this.anglebar.clear();
             this.anglebar.lineStyle(10,0xf76969);
-            this.anglebar.arc(50, 550, 100, 0, 3*Math.PI/2+angle, true);
+            this.anglebar.arc(angleX, angleY, 100, 0, 3*Math.PI/2+angle, true);
         }, this);
     },
     chargingAnimation2 : function () {        
@@ -322,19 +325,24 @@ var Play = {
     },
     moveToReferencePosition : function () {
         var time = movetime;
-        var tweenSecondPlatform = game.add.tween(this.secondplatform.body);
-        tweenSecondPlatform.to({x: cloudRef.x, y: cloudRef.y}, time);
-
-        var dx = this.secondplatform.x - cloudRef.x;
-        var dy = this.secondplatform.y - cloudRef.y;
-        var tweenFirstPlatform = game.add.tween(this.startplatform.body);
-        tweenFirstPlatform.to({x: this.startplatform.x-dx, y: this.startplatform.y-dy}, time);
         var tweenPlayer = game.add.tween(this.player.sprite.body);
-        tweenPlayer.to({x: this.player.sprite.body.x-dx, y: this.player.sprite.body.y-dy}, time);
+        tweenPlayer.to({x: playerRef.x, y: playerRef.y}, time);
         tweenPlayer.onComplete.add(function () {
             this.swapClouds();
             this.player.chargingAnimation();
         }, this);
+        var dx = this.player.sprite.x - playerRef.x;
+        var dy = this.player.sprite.y - playerRef.y;
+        var tweenSecondPlatform = game.add.tween(this.secondplatform.body);
+        tweenSecondPlatform.to({
+            x: this.secondplatform.x - dx, 
+            y: this.secondplatform.y - dy
+        }, time);
+        var tweenFirstPlatform = game.add.tween(this.startplatform.body);
+        tweenFirstPlatform.to({
+            x: this.startplatform.x-dx, 
+            y: this.startplatform.y-dy
+        }, time);
         tweenSecondPlatform.start();
         tweenFirstPlatform.start();
         tweenPlayer.start();
