@@ -10,7 +10,7 @@ var menutimeportal = 3;
 var introportal = false;
 var teleportoffset = 0;
 
-var showCollisionBoxes = true;
+var showCollisionBoxes = false;
 
 WebFontConfig = {
 
@@ -55,6 +55,7 @@ var Player = {
         game.time.events.remove(this.powerTimer);
         this.state = 'beaming';
         this.sprite.loadTexture('player-beam-in', 0);
+        this.sprite.scale.setTo(1, 1);
         var animationOut = this.sprite.animations.add('beam');
         //this.sprite.scale.setTo(0.25, 0.25);
         this.sprite.animations.play('beam', 72, false);
@@ -65,6 +66,7 @@ var Player = {
             this.sprite.animations.play('beam2', 72, false);
             animationIn.onComplete.add(function () {
                 this.sprite.loadTexture('player-idle');
+                this.sprite.scale.setTo(0.25, 0.25);
                 this.sprite.animations.play('player-idle', chargeanimationFPS, true);
                 this.state = 'falling';
                 this.fallingAnimation();
