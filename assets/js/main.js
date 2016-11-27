@@ -289,7 +289,8 @@ var Play = {
             this.arrowsprite.x = this.arrowspawnx;
             this.arrowsprite.y = this.arrowspawny;
             this.arrowsprite.animations.add('arrowman');
-            this.arrowsprite.animations.play('arrowman', 12, true);
+            this.arrowsprite.scale.setTo(0.3, 0.3);
+            this.arrowsprite.animations.play('arrowman', 150, true);
             this.arrowsprite.visible = true;
         }
 
@@ -419,7 +420,7 @@ var Load = {
         game.load.spritesheet('player-beam-in', '/assets/img/alienbeam.png', 152, 187, 36);
         game.load.spritesheet('player-beam-out', '/assets/img/alienbeam_back.png', 139, 182, 36);
         game.load.spritesheet('player-fall', '/assets/img/alien_falling.png', 315, 410, 50);
-        game.load.spritesheet('arrowman', 'assets/img/man_arrowman.png', 36, 60, 2);
+        game.load.spritesheet('arrowman', 'assets/img/falling_arrow.png', 118, 146, 50);
         game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
     },
     create : function(){
