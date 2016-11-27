@@ -348,7 +348,8 @@ var Load = {
         
         game.stage.backgroundColor = 0xffffff;
         var loadingLabel = game.add.text(400,300,'loading ...',{font: '20px Courier', fill: '#fffff'});
-        
+
+        game.load.image('menuscreen','assets/img/menu.png');
         game.load.image('platform', 'assets/img/platform.png');
         game.load.bitmapFont('desyrel', 'assets/fonts/desyrel.png', 'assets/fonts/desyrel.xml');
         game.load.image('background', 'assets/img/background.png');
@@ -374,6 +375,8 @@ var Load = {
 
 var Menu = {
     create : function(){
+
+        game.add.sprite(0, 0, 'menuscreen');
         var nameLabel = game.add.text(10,10,'Menu: Press Space to start',{font: '20px Courier', fill: '#fffff'});
 
         var spacekey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
