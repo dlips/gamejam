@@ -4,8 +4,10 @@ var cloudRef = {x: 50, y: 560};
 var points = 0.0;
 var gravity = 900;
 var movetime = 1000;
+var chargeanimationFPS = 40;
 
 var showCollisionBoxes = false;
+
 
 var Player = {
     init : function (x, y) {
@@ -13,11 +15,11 @@ var Player = {
         this.sprite.enableBody = true;
         game.physics.p2.enable(this.sprite, showCollisionBoxes);
         this.sprite.body.motionState = Phaser.Physics.P2.Body.DYNAMIC;
-        this.sprite.body.setRectangle(20,100);
+        this.sprite.body.setRectangle(45,110);
         this.sprite.animations.add('player-idle');
         this.sprite.scale.setTo(0.25, 0.25);
         this.sprite.smoothed = true;
-        this.sprite.animations.play('player-idle', 50, true);
+        this.sprite.animations.play('player-idle', chargeanimationFPS, true);
         this.sprite.body.collideWorldBounds = true;
 	    this.sprite.body.fixedRotation = true;
 	    this.sprite.body.setZeroDamping();
@@ -46,7 +48,7 @@ var Player = {
             this.sprite.animations.play('beam2', 50, false);
             animationIn.onComplete.add(function () {
                 this.sprite.loadTexture('player-idle');
-                this.sprite.animations.play('player-idle', 50, true);
+                this.sprite.animations.play('player-idle', chargeanimationFPS, true);
                 this.state = 'falling';
                 this.fallingAnimation();
             }, this);
@@ -67,7 +69,7 @@ var Player = {
         this.sprite.body.motionState = Phaser.Physics.P2.Body.STATIC;
         this.sprite.loadTexture('player-idle', 0);
         this.sprite.animations.add('player-idle');
-        this.sprite.animations.play('player-idle', 20 / fullchargtime, true);
+        this.sprite.animations.play('player-idle', chargeanimationFPS, true);
         
         this.anglebarborder.lineStyle(10,0x9033FF);
         this.anglebarborder.arc(50, 550, 100, 0, 3*Math.PI/2, true);
