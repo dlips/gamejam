@@ -52,7 +52,6 @@ var Player = {
         game.time.events.remove(this.powerTimer);
         this.state = 'beaming';
         this.sprite.loadTexture('player-beam-in', 0);
-        this.sprite.anchor.x = 0.5;
         var animationOut = this.sprite.animations.add('beam');
         this.sprite.scale.setTo(0.25, 0.25);
         this.sprite.animations.play('beam', 20, false);
