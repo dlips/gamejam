@@ -229,7 +229,7 @@ var Play = {
         this.moonBack.tilePosition.x -= 0.05;
         this.mountainsFore.tilePosition.x -= 0.3;
         this.mountainsBack.tilePosition.x -= 0.1;
-        if(this.player.state == 'falling' && (this.player.sprite.body.y > this.game.height)){
+        if(this.player.state == 'falling' && ((this.player.sprite.body.y > this.game.height) || (this.player.sprite.body.x > this.game.width))){
             this.player.state = 'dead';
             var text = game.add.bitmapText(400, 300, 'desyrel', 'Scrub Try Again', 64);
             text.anchor.x = 0.5;
