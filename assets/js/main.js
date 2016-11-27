@@ -5,6 +5,7 @@ var points = 0.0;
 var gravity = 900;
 var movetime = 1000;
 var chargeanimationFPS = 40;
+var menutimeportal = 3;
 
 var showCollisionBoxes = false;
 
@@ -88,7 +89,7 @@ var Player = {
         this.anglebarborder.arc(50, 550, 100, 0, 3*Math.PI/2, true);
 
         ctime = game.time.totalElapsedSeconds();
-        this.angleTimer = game.time.events.loop(Phaser.Timer.SECOND / 50, function() {
+        this.angleTimer = game.time.events.loop(Phaser.Timer.SECOND / 100, function() {
             var t = game.time.totalElapsedSeconds();
             var angle = ((Math.PI/2) * (t-ctime)/fullchargtime) % Math.PI;
             if (angle > (Math.PI/2)) {
@@ -106,7 +107,7 @@ var Player = {
         
         ctime = game.time.totalElapsedSeconds();
         game.time.events.remove(this.angleTimer);
-        this.powerTimer = game.time.events.loop(Phaser.Timer.SECOND / 50, function() {
+        this.powerTimer = game.time.events.loop(Phaser.Timer.SECOND / 100, function() {
             var t = game.time.totalElapsedSeconds();
             var power = (100* (t-ctime)/fullchargtime) % 200;
             if (power > 100) {
@@ -343,10 +344,10 @@ var Play = {
         var radius = 1000;
         startrect.beginFill(0x40FF7E,alpha);
         startrect.drawCircle(400,300,radius);
-        var scaleloop = game.time.events.loop(Phaser.Timer.SECOND / 50, function() {
+        var scaleloop = game.time.events.loop(Phaser.Timer.SECOND / 100, function() {
             var t = game.time.totalElapsedSeconds() - ct;
-            alpha = alpha - 0.005*t;
-            radius = radius - 10*t;
+            alpha = alpha - 0.005*t*menutimeportal;
+            radius = radius - 10*t*menutimeportal;
             if(radius<60){
                 alpha = 0;
                 game.time.events.remove(scaleloop);
@@ -412,10 +413,10 @@ var Menu = {
         }, this);
         startrect.events.onInputUp.add(function(){
             var ct = game.time.totalElapsedSeconds();
-            var scaleloop = game.time.events.loop(Phaser.Timer.SECOND / 50, function() {
+            var scaleloop = game.time.events.loop(Phaser.Timer.SECOND / 100, function() {
                 var t = game.time.totalElapsedSeconds() - ct;
-                alpha = alpha + 0.005*t;
-                radius = radius + 10*t;
+                alpha = alpha + 0.005*t*menutimeportal;
+                radius = radius + 10*t*menutimeportal;
                 if(radius>1000){
                     alpha = 1;
                     this.startGame();
